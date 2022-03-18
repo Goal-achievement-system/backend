@@ -1,28 +1,21 @@
 package com.j2kb.goal.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
-@AllArgsConstructor
+@Builder
+@Getter
 public class Member {
     private String email;
     private String password;
     private String nickName;
     private Sex sex;
-    private Age age;
+    private byte age;
+    private int money;
 
     public static enum Sex{
         MALE,
         FEMALE,
         UNKNOWN;
-    }
-
-    public static enum Age{
-        AGE10,
-        AGE20,
-        AGE30,
-        AGE40,
-        AGE50,
-        AGE60,
-        AGESILVER;
     }
 }
