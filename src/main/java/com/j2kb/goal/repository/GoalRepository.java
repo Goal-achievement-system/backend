@@ -10,10 +10,13 @@ public interface GoalRepository {
     Optional<Goal> selectGoalByGoalId(long GoalId);
     
     List<Goal> selectAllGoalsByEmail(String email);
-    List<Goal> selectUnAchievedGoalsByEmail(String email);
-    List<Goal> selectAchievedGoalsByEmail(String email);
+    List<Goal> selectFailGoalsByEmail(String email);
+    List<Goal> selectSuccessGoalsByEmail(String email);
+    List<Goal> selectOnGoingGoalsByEmail(String email);
+    List<Goal> selectHoldGoalsByEmail(String email);
 
-    long selectAllGoalsCountByEmail(String email);
-    long selectUnAchievedGoalsCountByEmail(String email);
-    long selectAchievedGoalsCountByEmail(String email);
+    long selectAllGoalsCount();
+    long selectAllSuccessGoalsCount();
+    long selectAllFailGoalsCount();
+    long selectAllOngoingGoalsCount();
 }
