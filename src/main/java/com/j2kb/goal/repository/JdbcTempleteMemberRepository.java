@@ -1,11 +1,14 @@
 package com.j2kb.goal.repository;
 
 import com.j2kb.goal.dto.Member;
+import com.j2kb.goal.util.SHA256;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class JdbcTempleteMemberRepository implements MemberRepository{
@@ -20,11 +23,21 @@ public class JdbcTempleteMemberRepository implements MemberRepository{
     @Override
     public void insertMember(Member member) {
         String sql = "insert into Member values(?,?,?,?,?,?,?)";
-        String salt = makeSalt(member);
+        String password = member.getPassword();
+        Map<String,String> passwordAndSalt = passwordHashing(password);
+        password = passwordAndSalt.get("password");
+        String salt = passwordAndSalt.get("salt");
         int defaultMoney = 0;
-        jdbcTemplate.update(sql,member.getEmail(),member.getPassword(),salt,member.getNickName(),member.getSex().name(),member.getAge(),defaultMoney);
+        jdbcTemplate.update(sql,member.getEmail(),password,salt,member.getNickName(),member.getSex().name(),member.getAge(),defaultMoney);
     }
-    private String makeSalt(Member member){
+    private Map<String,String> passwordHashing(String password){
+        String salt = makeSalt();
+        Map<String,String> map = new HashMap<>();
+        map.put("password",SHA256.encrypt(password+salt));
+        map.put("salt",salt);
+        return map;
+    }
+    private String makeSalt(){
         Random random = new Random();
         char[] saltChars = new char[64];
         for(int i=0;i<saltChars.length;i++){
@@ -55,11 +68,17 @@ public class JdbcTempleteMemberRepository implements MemberRepository{
 
     @Override
     public void updateMember(Member member) {
-
+        String password = member.getPassword();
+        Map<String,String> passwordAndSalt = passwordHashing(password);
+        password = passwordAndSalt.get("password");
+        String salt = passwordAndSalt.get("salt");
+        String sql = "update member set password = ? and salt = ? and nickname = ? and sex = ? and age = ? and money = ? where email = ?";
+        jdbcTemplate.update(sql,password,salt,member.getNickName(),member.getSex().name(),member.getAge(),member.getEmail());
     }
 
     @Override
-    public void deleteMember(Member member) {
-
+    public void deleteMember(Member member) { // 삭제는 로그인 불가 작업
+        String sql = "update member set password = '' and salt = '' and nickname = '' and sex = '' and age = 0 and money = 0 where email = ?";
+        jdbcTemplate.update(sql,member.getEmail());
     }
 }
