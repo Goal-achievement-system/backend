@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class JdbcTempleteMemberRepository implements MemberRepository{
+public class JdbcTemplateMemberRepository implements MemberRepository{
 
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public JdbcTempleteMemberRepository(DataSource dataSource){
+    public JdbcTemplateMemberRepository(DataSource dataSource){
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
