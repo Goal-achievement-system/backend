@@ -12,6 +12,9 @@ public interface CertificationRepository {
     Optional<Certification> selectCertificationByGoalId(long goalId);
 
     void deleteCertification(Certification certification);
-    void updateCertification(Certification certification);
+
+    void increaseSuccessCount(long certId);
+
+    void increaseFailCount(long certId);
 
 }
