@@ -21,7 +21,7 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
 
     @Override
     public void insertGoal(Goal goal) {
-        String sql = "insert int goal(member_email,goal_name,content,limit_date,money,reward) values(?,?,?,?,?,?)";
+        String sql = "insert into goal(member_email,goal_name,content,limit_date,money,reward) values(?,?,?,?,?,?)";
         jdbcTemplate.update(sql, goal.getMemberEmail(),goal.getGoalName(),goal.getContent(),goal.getLimitDate(),goal.getMoney(),goal.getReward());
     }
 
