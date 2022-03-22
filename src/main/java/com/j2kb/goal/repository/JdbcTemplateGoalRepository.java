@@ -21,8 +21,8 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
 
     @Override
     public void insertGoal(Goal goal) {
-        String sql = "insert into goal(member_email,goal_name,content,limit_date,money,reward) values(?,?,?,?,?,?)";
-        jdbcTemplate.update(sql, goal.getMemberEmail(),goal.getGoalName(),goal.getContent(),goal.getLimitDate(),goal.getMoney(),goal.getReward());
+        String sql = "insert into goal(member_email,category,goal_name,content,limit_date,money,reward) values(?,?,?,?,?,?,?)";
+        jdbcTemplate.update(sql, goal.getMemberEmail(),goal.getCategory(),goal.getGoalName(),goal.getContent(),goal.getLimitDate(),goal.getMoney(),goal.getReward());
     }
 
     @Override
@@ -42,7 +42,7 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
 
     @Override
     public List<Goal> selectFailGoalsByEmail(String email) {
-        String sql = "select * from goal where verification_result != 'success' and member_email = ?";
+        String sql = "select * from goal where verification_result = 'fail' and member_email = ?";
         List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email);
         return results;
     }
@@ -65,6 +65,41 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
     public List<Goal> selectHoldGoalsByEmail(String email) {
         String sql = "select * from goal where verification_result = 'hold' and member_email = ?";
         List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email);
+        return results;
+    }
+
+    @Override
+    public List<Goal> selectAllGoalsByCategory(String category) {
+        String sql = "select * from goal where category = ?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category);
+        return results;
+    }
+
+    @Override
+    public List<Goal> selectFailGoalsByCategory(String category) {
+        String sql = "select * from goal where verification_result = 'fail' and category = ?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category);
+        return results;
+    }
+
+    @Override
+    public List<Goal> selectSuccessGoalsByCategory(String category) {
+        String sql = "select * from goal where verification_result = 'success' and category = ?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category);
+        return results;
+    }
+
+    @Override
+    public List<Goal> selectOnGoingGoalsByCategory(String category) {
+        String sql = "select * from goal where verification_result = 'ongoing' and category = ?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category);
+        return results;
+    }
+
+    @Override
+    public List<Goal> selectHoldGoalsByCategory(String category) {
+        String sql = "select * from goal where verification_result = 'hold' and category = ?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category);
         return results;
     }
 
@@ -103,6 +138,7 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
             Goal.GoalBuilder goalBuilder = Goal.builder();
             goalBuilder.goalId(rs.getLong("goal_id"))
                     .memberEmail(rs.getString("member_email"))
+                    .category(rs.getString("category"))
                     .goalName(rs.getString("goal_name"))
                     .content(rs.getString("content"))
                     .limitDate(rs.getTimestamp("limit_date"))
