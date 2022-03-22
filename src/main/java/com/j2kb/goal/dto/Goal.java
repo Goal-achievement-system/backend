@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 public class Goal {
     private long goalId;
     private String memberEmail;
+    private String category;
     private String goalName;
     private String content;
     private Timestamp limitDate;
