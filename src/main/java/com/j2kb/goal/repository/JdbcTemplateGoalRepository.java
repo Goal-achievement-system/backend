@@ -37,7 +37,12 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
     @Override
     public Optional<Goal> selectGoalByGoalId(long goalId) {
         String sql = "select * from goal where goal_id = ?";
-        Goal goal = jdbcTemplate.queryForObject(sql,new GoalRowMapper<Goal>(),goalId);
+        Goal goal;
+        try {
+            goal = jdbcTemplate.queryForObject(sql, new GoalRowMapper<Goal>(), goalId);
+        }catch (Exception e){
+            goal = null;
+        }
         Optional<Goal> ret = Optional.ofNullable(goal);
         return ret;
     }
