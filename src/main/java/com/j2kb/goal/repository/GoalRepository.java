@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GoalRepository {
+
+    List<String> selectAllCategories();
+
     void insertGoal(Goal goal);
     Optional<Goal> selectGoalByGoalId(long GoalId);
-    
+
     List<Goal> selectAllGoalsByEmail(String email);
     List<Goal> selectFailGoalsByEmail(String email);
     List<Goal> selectSuccessGoalsByEmail(String email);

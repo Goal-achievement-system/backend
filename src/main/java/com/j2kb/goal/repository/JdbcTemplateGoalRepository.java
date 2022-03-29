@@ -4,6 +4,8 @@ import com.j2kb.goal.dto.Goal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -11,12 +13,19 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class JdbcTemplateGoalRepository implements GoalRepository{
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
     public JdbcTemplateGoalRepository(DataSource dataSource){
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    @Override
+    public List<String> selectAllCategories() {
+        String sql = "select category from category_list";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getString("category"));
     }
 
     @Override
