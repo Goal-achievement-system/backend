@@ -13,8 +13,8 @@ public interface CertificationRepository {
 
     void deleteCertification(Certification certification);
 
-    void increaseSuccessCount(long certId);
+    void increaseSuccessCount(long goalId);
 
-    void increaseFailCount(long certId);
+    void increaseFailCount(long goalId);
 
 }

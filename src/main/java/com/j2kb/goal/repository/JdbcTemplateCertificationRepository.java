@@ -52,19 +52,19 @@ public class JdbcTemplateCertificationRepository implements CertificationReposit
     }
 
     @Override
-    public void increaseSuccessCount(long certId) {
+    public void increaseSuccessCount(long goalId) {
         String sql = "update certification set success_count = success_count+1," +
                 "verification_result = case when require_success_count > success_count then 'ongoing' else 'success' end " +
-                "where cert_id = ?";
-        jdbcTemplate.update(sql,certId);
+                "where goal_id = ?";
+        jdbcTemplate.update(sql,goalId);
     }
 
     @Override
-    public void increaseFailCount(long certId) {
+    public void increaseFailCount(long goalId) {
         String sql = "update certification set fail_count = fail_count+1," +
                 "verification_result = case when require_success_count * 0.9 > fail_count then 'ongoing' else 'hold' end " +
-                "where cert_id = ?";
-        jdbcTemplate.update(sql,certId);
+                "where goal_id = ?";
+        jdbcTemplate.update(sql,goalId);
     }
 
 
