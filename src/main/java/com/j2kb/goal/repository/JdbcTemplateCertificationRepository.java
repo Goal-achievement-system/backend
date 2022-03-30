@@ -4,13 +4,14 @@ import com.j2kb.goal.dto.Certification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-
+@Repository
 public class JdbcTemplateCertificationRepository implements CertificationRepository{
 
     private JdbcTemplate jdbcTemplate;
@@ -35,7 +36,12 @@ public class JdbcTemplateCertificationRepository implements CertificationReposit
     @Override
     public Optional<Certification> selectCertificationByGoalId(long goalId) {
         String sql = "select * from certification where goal_id = ?";
-        Certification certification = jdbcTemplate.queryForObject(sql,new CertificationRowMapper<Certification>(),goalId);
+        Certification certification;
+        try {
+            certification = jdbcTemplate.queryForObject(sql, new CertificationRowMapper<Certification>(), goalId);
+        }catch (Exception e){
+            certification = null;
+        }
         return Optional.ofNullable(certification);
     }
 
