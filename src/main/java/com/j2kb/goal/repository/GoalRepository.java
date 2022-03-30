@@ -9,7 +9,7 @@ public interface GoalRepository {
 
     List<String> selectAllCategories();
 
-    void insertGoal(Goal goal);
+    Goal insertGoal(Goal goal);
     Optional<Goal> selectGoalByGoalId(long GoalId);
 
     List<Goal> selectAllGoalsByEmail(String email);

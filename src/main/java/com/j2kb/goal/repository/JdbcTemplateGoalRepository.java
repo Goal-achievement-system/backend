@@ -3,11 +3,16 @@ package com.j2kb.goal.repository;
 import com.j2kb.goal.dto.Goal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -29,9 +34,24 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
     }
 
     @Override
-    public void insertGoal(Goal goal) {
+    public Goal insertGoal(Goal goal) {
         String sql = "insert into goal(member_email,category,goal_name,content,limit_date,money,reward) values(?,?,?,?,?,?,?)";
-        jdbcTemplate.update(sql, goal.getMemberEmail(),goal.getCategory(),goal.getGoalName(),goal.getContent(),goal.getLimitDate(),goal.getMoney(),goal.getReward());
+        //jdbcTemplate.update(sql, goal.getMemberEmail(),goal.getCategory(),goal.getGoalName(),goal.getContent(),goal.getLimitDate(),goal.getMoney(),goal.getReward());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {
+            PreparedStatement preparedStatement = con.prepareStatement(sql, new String[]{"goal_id"});
+            preparedStatement.setString(1,goal.getMemberEmail());
+            preparedStatement.setString(2, goal.getCategory());
+            preparedStatement.setString(3,goal.getGoalName());
+            preparedStatement.setString(4,goal.getContent());
+            preparedStatement.setTimestamp(5,goal.getLimitDate());
+            preparedStatement.setInt(6,goal.getMoney());
+            preparedStatement.setString(7,goal.getReward());
+            return preparedStatement;
+        },keyHolder);
+        long goalId = keyHolder.getKey().longValue();
+        Goal result = selectGoalByGoalId(goalId).orElse(Goal.builder().build());
+        return result;
     }
 
     @Override
