@@ -60,11 +60,7 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
                     .money(rs.getInt("money"));
             return builder.build();
         },meberEmail);
-        if(result.isEmpty()){
-            throw new IllegalStateException("No Member with email = "+meberEmail);
-        }else{
-            return result.get(0);
-        }
+        return result.get(0);
     }
 
     @Override
