@@ -1,7 +1,9 @@
 package com.j2kb.goal.repository;
 
 import com.j2kb.goal.dto.Certification;
+import com.j2kb.goal.exception.DuplicateCertificationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -24,7 +26,11 @@ public class JdbcTemplateCertificationRepository implements CertificationReposit
     @Override
     public void insertCertification(Certification certification) {
         String sql = "insert into certification(goal_id,content,image,require_success_count,success_count,fail_count) values(?,?,?,?,?,?)";
-        jdbcTemplate.update(sql,certification.getGoalId(),certification.getContent(),certification.getImage(),certification.getRequireSuccessCount(),certification.getSuccessCount(),certification.getFailCount());
+        try{
+            jdbcTemplate.update(sql,certification.getGoalId(),certification.getContent(),certification.getImage(),certification.getRequireSuccessCount(),certification.getSuccessCount(),certification.getFailCount());
+        }catch (DataAccessException e){
+            throw new DuplicateCertificationException("",e);
+        }
     }
 
     @Override
