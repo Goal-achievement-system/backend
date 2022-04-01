@@ -1,0 +1,223 @@
+@startuml
+class com.j2kb.goal.exception.DuplicateMemberException {
+}
+interface com.j2kb.goal.service.AbstractCertService {
+~ boolean addCert(Certification)
+~ Optional<Certification> getCertificationByGoalId(long)
+}
+class com.j2kb.goal.exception.NoMatchedCategoryException {
+}
+class com.j2kb.goal.service.CertService {
+- CertificationRepository certificationRepository
++ boolean addCert(Certification)
++ Optional<Certification> getCertificationByGoalId(long)
+}
+interface com.j2kb.goal.repository.CertificationRepository {
+~ void insertCertification(Certification)
+~ List<Certification> selectUnVerifiedCertifications()
+~ Optional<Certification> selectCertificationByGoalId(long)
+~ void deleteCertification(Certification)
+~ void increaseSuccessCount(long)
+~ void increaseFailCount(long)
+}
+class com.j2kb.goal.controller.MemberController {
+- MemberService memberService
++ Map<String,String> login(Member)
++ void join(Member)
++ Member getMyInfo()
++ Member updateMyInfo(Member)
+}
+class com.j2kb.goal.dto.Goal {
+- long goalId
+- String memberEmail
+- String category
+- String goalName
+- String content
+- Timestamp limitDate
+- int money
+- String reward
+- String verificationResult
+}
+class com.j2kb.goal.dto.Verification {
+- long verificationId
+- String memberEmail
+- long certId
+}
+class com.j2kb.goal.service.MemberService {
+- MemberRepository memberRepository
++ String login(Member)
++ void join(Member)
++ Member getMemberByEmail(String)
++ void updateMember(Member)
++ void withdrawal(Member)
+}
+class com.j2kb.goal.exception.NoMatchedCertificationException {
+}
+class com.j2kb.goal.util.SHA256 {
++ {static} String encrypt(String)
+- {static} String bytesToHex(byte[])
+}
+interface com.j2kb.goal.repository.MemberRepository {
+~ void insertMember(Member)
+~ Member selectMemberByMemberEmail(String)
+~ void updateMember(Member)
+~ void deleteMember(Member)
+}
+class com.j2kb.goal.service.GoalService {
+- GoalRepository goalRepository
+- MemberRepository memberRepository
++ Optional<Goal> getGoalByGoalId(long)
++ Goal addGoal(Goal)
++ List<Goal> getGoalsByCategoryAndState(String,String)
++ List<Goal> getGoalsByEmailAndState(String,String)
++ List<String> getCategories()
+}
+interface com.j2kb.goal.service.AbstractGoalService {
+~ Optional<Goal> getGoalByGoalId(long)
+~ Goal addGoal(Goal)
+~ List<Goal> getGoalsByCategoryAndState(String,String)
+~ List<Goal> getGoalsByEmailAndState(String,String)
+~ List<String> getCategories()
+}
+class com.j2kb.goal.service.VerfiService {
+- CertificationRepository certificationRepository
++ void success(long)
++ void fail(long)
+}
+interface com.j2kb.goal.service.AbstractVerfiService {
+~ void success(long)
+~ void fail(long)
+}
+interface com.j2kb.goal.repository.GoalRepository {
+~ List<String> selectAllCategories()
+~ Goal insertGoal(Goal)
+~ Optional<Goal> selectGoalByGoalId(long)
+~ List<Goal> selectAllGoalsByEmail(String)
+~ List<Goal> selectFailGoalsByEmail(String)
+~ List<Goal> selectSuccessGoalsByEmail(String)
+~ List<Goal> selectOnGoingGoalsByEmail(String)
+~ List<Goal> selectHoldGoalsByEmail(String)
+~ List<Goal> selectAllGoalsByCategory(String)
+~ List<Goal> selectFailGoalsByCategory(String)
+~ List<Goal> selectSuccessGoalsByCategory(String)
+~ List<Goal> selectOnGoingGoalsByCategory(String)
+~ List<Goal> selectHoldGoalsByCategory(String)
+~ long selectAllGoalsCount()
+~ long selectAllSuccessGoalsCount()
+~ long selectAllFailGoalsCount()
+~ long selectAllOngoingGoalsCount()
+}
+class com.j2kb.goal.dto.Certification {
+- long certId
+- long goalId
+- String content
+- String image
+- byte requireSuccessCount
+- byte successCount
+- byte failCount
+}
+interface com.j2kb.goal.repository.VerificationRepository {
+~ void insertVerification(Verification)
+}
+class com.j2kb.goal.exception.DuplicateCertificationException {
+}
+class com.j2kb.goal.repository.JdbcTemplateGoalRepository {
+- JdbcTemplate jdbcTemplate
++ List<String> selectAllCategories()
++ Goal insertGoal(Goal)
++ Optional<Goal> selectGoalByGoalId(long)
++ List<Goal> selectAllGoalsByEmail(String)
++ List<Goal> selectFailGoalsByEmail(String)
++ List<Goal> selectSuccessGoalsByEmail(String)
++ List<Goal> selectOnGoingGoalsByEmail(String)
++ List<Goal> selectHoldGoalsByEmail(String)
++ List<Goal> selectAllGoalsByCategory(String)
++ List<Goal> selectFailGoalsByCategory(String)
++ List<Goal> selectSuccessGoalsByCategory(String)
++ List<Goal> selectOnGoingGoalsByCategory(String)
++ List<Goal> selectHoldGoalsByCategory(String)
++ long selectAllGoalsCount()
++ long selectAllSuccessGoalsCount()
++ long selectAllFailGoalsCount()
++ long selectAllOngoingGoalsCount()
+}
+class com.j2kb.goal.repository.JdbcTemplateGoalRepository.GoalRowMapper {
++ T mapRow(ResultSet,int)
+}
+class com.j2kb.goal.exception.NoMatchedMemberException {
+}
+class com.j2kb.goal.repository.JdbcTemplateCertificationRepository {
+- JdbcTemplate jdbcTemplate
++ void insertCertification(Certification)
++ List<Certification> selectUnVerifiedCertifications()
++ Optional<Certification> selectCertificationByGoalId(long)
++ void deleteCertification(Certification)
++ void increaseSuccessCount(long)
++ void increaseFailCount(long)
+}
+class com.j2kb.goal.repository.JdbcTemplateCertificationRepository.CertificationRowMapper {
++ T mapRow(ResultSet,int)
+}
+class com.j2kb.goal.dto.Member {
+- String email
+- String password
+- String nickName
+- Sex sex
+- byte age
+- int money
+}
+enum com.j2kb.goal.dto.Sex {
++  MALE
++  FEMALE
++  UNKNOWN
+}
+class com.j2kb.goal.GoalApplication {
++ {static} void main(String[])
+}
+class com.j2kb.goal.controller.GoalController {
+- GoalService goalService
+- CertService certService
+- VerfiService verfiService
++ Goal addNewGoal(Goal)
++ List<String> getCategories()
++ Goal getGoalByGoalId(long)
++ List<Goal> getGoalsByCategory(String,String)
++ Certification getCertificationByGoalId(long)
++ void successVerification(long)
++ void failVerification(long)
+}
+class com.j2kb.goal.repository.JdbcTemplateMemberRepository {
+- JdbcTemplate jdbcTemplate
++ void insertMember(Member)
+- Map<String,String> passwordHashing(String)
+- String makeSalt()
++ Member selectMemberByMemberEmail(String)
++ void updateMember(Member)
++ void deleteMember(Member)
+}
+interface com.j2kb.goal.service.AbstractMemberService {
+~ String login(Member)
+~ void join(Member)
+~ Member getMemberByEmail(String)
+~ void updateMember(Member)
+~ void withdrawal(Member)
+}
+
+
+com.j2kb.goal.exception.RuntimeException <|-- com.j2kb.goal.exception.DuplicateMemberException
+com.j2kb.goal.exception.RuntimeException <|-- com.j2kb.goal.exception.NoMatchedCategoryException
+com.j2kb.goal.service.AbstractCertService <|.. com.j2kb.goal.service.CertService
+com.j2kb.goal.service.AbstractMemberService <|.. com.j2kb.goal.service.MemberService
+com.j2kb.goal.exception.RuntimeException <|-- com.j2kb.goal.exception.NoMatchedCertificationException
+com.j2kb.goal.service.AbstractGoalService <|.. com.j2kb.goal.service.GoalService
+com.j2kb.goal.service.AbstractVerfiService <|.. com.j2kb.goal.service.VerfiService
+com.j2kb.goal.exception.RuntimeException <|-- com.j2kb.goal.exception.DuplicateCertificationException
+com.j2kb.goal.repository.GoalRepository <|.. com.j2kb.goal.repository.JdbcTemplateGoalRepository
+com.j2kb.goal.repository.JdbcTemplateGoalRepository +.. com.j2kb.goal.repository.JdbcTemplateGoalRepository.GoalRowMapper
+com.j2kb.goal.repository.RowMapper <|.. com.j2kb.goal.repository.JdbcTemplateGoalRepository.GoalRowMapper
+com.j2kb.goal.exception.RuntimeException <|-- com.j2kb.goal.exception.NoMatchedMemberException
+com.j2kb.goal.repository.CertificationRepository <|.. com.j2kb.goal.repository.JdbcTemplateCertificationRepository
+com.j2kb.goal.repository.JdbcTemplateCertificationRepository +.. com.j2kb.goal.repository.JdbcTemplateCertificationRepository.CertificationRowMapper
+com.j2kb.goal.repository.RowMapper <|.. com.j2kb.goal.repository.JdbcTemplateCertificationRepository.CertificationRowMapper
+com.j2kb.goal.repository.MemberRepository <|.. com.j2kb.goal.repository.JdbcTemplateMemberRepository
+@enduml
