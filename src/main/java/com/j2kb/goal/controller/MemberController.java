@@ -2,6 +2,7 @@ package com.j2kb.goal.controller;
 
 import com.j2kb.goal.dto.Member;
 import com.j2kb.goal.service.MemberService;
+import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,11 +34,14 @@ public class MemberController {
         String email = ""; // ToDo "인증토큰으로부터 이메일 뽑아내는 로직 추가 필요"
         return memberService.getMemberByEmail(email);
     }
-    @GetMapping("/myinfo")
+    @PutMapping("/myinfo")
     public Member updateMyInfo(@RequestBody Member member){
         String email = ""; // ToDo "인증토큰으로부터 이메일 뽑아내는 로직 추가 필요"
         memberService.updateMember(member);
         return memberService.getMemberByEmail(email);
     }
-
+    @PostMapping("/verfi")
+    public boolean f(@RequestBody Map<String,String> map){
+        return JwtBuilder.isValid(map.get("Authorization"));
+    }
 }

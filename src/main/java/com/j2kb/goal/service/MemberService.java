@@ -4,6 +4,7 @@ import com.j2kb.goal.dto.Member;
 import com.j2kb.goal.exception.DuplicateMemberException;
 import com.j2kb.goal.exception.NoMatchedMemberException;
 import com.j2kb.goal.repository.MemberRepository;
+import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,11 @@ public class MemberService implements AbstractMemberService{
 
     @Override
     public String login(Member member) {
-        return null;
+        if(memberRepository.login(member)){
+            return JwtBuilder.build(member.getEmail());
+        }else{
+            return "";
+        }
     }
 
     @Override

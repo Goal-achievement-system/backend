@@ -7,4 +7,5 @@ public interface MemberRepository {
     Member selectMemberByMemberEmail(String memberEmail);
     void updateMember(Member member);
     void deleteMember(Member member);
+    boolean login(Member member);
 }

@@ -14,7 +14,7 @@ public class JwtBuilder {
         String header = "\"typ\": \"JWT\"," +
                 " \"alg\": \"HS256\"";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String payload = "{\"exp\": "+LocalDateTime.now().minusDays(1).format(formatter)+"," +
+        String payload = "{\"exp\": "+LocalDateTime.now().plusDays(1).format(formatter)+"," +
                 "\"email\": \""+email+"\"}";
         header = Base64.getEncoder().encodeToString(header.getBytes());
         payload = Base64.getEncoder().encodeToString(payload.getBytes());
@@ -32,7 +32,7 @@ public class JwtBuilder {
         return new String(Base64.getDecoder().decode(payload));
     }
     public static boolean isValid(String jwt){
-        String[] jwtArray = jwt.split(".");
+        String[] jwtArray = jwt.split("\\.");
         String header = jwtArray[0];
         String payload = jwtArray[1];
         String sign = jwtArray[2];

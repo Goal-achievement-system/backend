@@ -78,4 +78,31 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
         String sql = "update member set password = '' and salt = '' and nickname = '' and sex = '' and age = 0 and money = 0 where email = ?";
         jdbcTemplate.update(sql,member.getEmail());
     }
+
+    @Override
+    public boolean login(Member member) {
+        String sql = "select * from member where email = ? and SHA2(concat(?,salt),256) = password";
+        String password = member.getPassword();
+        System.out.println(password);
+        List<Member> results =  jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Member.MemberBuilder builder = Member.builder()
+                    .email(rs.getString("email"))
+                    .password("")
+                    .nickName(rs.getString("nickName"))
+                    .sex(Member.Sex.valueOf(rs.getString("sex")))
+                    .age(rs.getByte("age"))
+                    .money(rs.getInt("money"));
+            return builder.build();
+        },member.getEmail(),password);
+        if(results.isEmpty()){
+            return false;
+        }else {
+            Member result = results.get(0);
+            if(result.getEmail().equals(member.getEmail())){
+                return true;
+            }else {
+                return false;
+            }
+        }
+    }
 }
