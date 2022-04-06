@@ -5,12 +5,13 @@ import com.j2kb.goal.dto.Goal;
 import com.j2kb.goal.service.CertService;
 import com.j2kb.goal.service.GoalService;
 import com.j2kb.goal.service.VerfiService;
+import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-
+//ToDo Goal 조회기능에는 memberEmail이 포함되면 안됨.
 @RestController
 @RequestMapping("/api/goals")
 public class GoalController {
@@ -38,27 +39,37 @@ public class GoalController {
 
     @GetMapping("/{goalId:[0-9]+}")
     public Goal getGoalByGoalId(@PathVariable long goalId){
-        return goalService.getGoalByGoalId(goalId).orElse(Goal.builder().build());
+        Goal goal = goalService.getGoalByGoalId(goalId).orElse(Goal.builder().build());
+        return goal;
     }
 
     @GetMapping("/{category}/list/{state}")
     public List<Goal> getGoalsByCategory(@PathVariable String category, @PathVariable String state){
-        return goalService.getGoalsByCategoryAndState(category,state);
+        List<Goal> result = goalService.getGoalsByCategoryAndState(category,state);
+        return result;
     }
 
     @GetMapping("/cert/{goalId:[0-9]+}")
-    public Certification getCertificationByGoalId(@PathVariable long goalId){
+    public Certification getCertificationByGoalId(@PathVariable long goalId){ // ToDo 이메일은 제외해야 함.
         Optional<Certification> result = certService.getCertificationByGoalId(goalId);
         return result.orElse(Certification.builder().build());
     }
 
+    @PostMapping("/cert/{goalId:[0-9]+}")
+    public void addCertificationByGoalId(@PathVariable long goalId, @RequestBody Certification certification, @RequestHeader("Authorization") String token){
+        String goalOwnerEmail = JwtBuilder.getEmailFromJwt(token);
+        certService.addCert(certification,goalOwnerEmail);
+    }
+
     @PutMapping("/goals/cert/success/{goalId:[0-9]+}")
-    public void successVerification(long goalId){
-        verfiService.success(goalId);
+    public void successVerification(long goalId,@RequestHeader("Authorization") String token){
+        String goalOwnerEmail = JwtBuilder.getEmailFromJwt(token);
+        verfiService.success(goalId,goalOwnerEmail);
     }
 
     @PutMapping("/goals/cert/fail/{goalId:[0-9]+}")
-    public void failVerification(long goalId){
-        verfiService.fail(goalId);
+    public void failVerification(long goalId,@RequestHeader("Authorization") String token){
+        String goalOwnerEmail = JwtBuilder.getEmailFromJwt(token);
+        verfiService.fail(goalId,goalOwnerEmail);
     }
 }
