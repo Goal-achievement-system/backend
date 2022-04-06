@@ -25,6 +25,9 @@ public class JwtBuilder {
         return jwt;
     }
     public static String getEmailFromJwt(String jwt){
+        if(!isValid(jwt)){
+            return "";
+        }
         String[] jwtArray = jwt.split(".");
         String header = jwtArray[0];
         String payload = jwtArray[1];
