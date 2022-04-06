@@ -171,7 +171,6 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
         public T mapRow(ResultSet rs, int rowNum) throws SQLException {
             Goal.GoalBuilder goalBuilder = Goal.builder();
             goalBuilder.goalId(rs.getLong("goal_id"))
-                    .memberEmail(rs.getString("member_email"))
                     .category(rs.getString("category"))
                     .goalName(rs.getString("goal_name"))
                     .content(rs.getString("content"))
