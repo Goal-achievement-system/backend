@@ -25,19 +25,19 @@ public class MemberController {
         result.put("Authorization",token);
         return result;
     }
-    @PostMapping("/")
+    @PostMapping("")
     public void join(@RequestBody Member member){
         memberService.join(member);
     }
     @GetMapping("/myinfo")
-    public Member getMyInfo(){
-        String email = ""; // ToDo "인증토큰으로부터 이메일 뽑아내는 로직 추가 필요"
+    public Member getMyInfo( @RequestHeader("Authorization") String token){
+        String email = JwtBuilder.getEmailFromJwt(token);
         return memberService.getMemberByEmail(email);
     }
     @PutMapping("/myinfo")
-    public Member updateMyInfo(@RequestBody Member member){
-        String email = ""; // ToDo "인증토큰으로부터 이메일 뽑아내는 로직 추가 필요"
-        memberService.updateMember(member);
+    public Member updateMyInfo(@RequestBody Member member, @RequestHeader("Authorization") String token){
+        String email = JwtBuilder.getEmailFromJwt(token);
+        memberService.updateMember(member,email);
         return memberService.getMemberByEmail(email);
     }
     @PostMapping("/verfi")
