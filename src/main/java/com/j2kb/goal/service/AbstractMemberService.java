@@ -6,6 +6,6 @@ public interface AbstractMemberService {
     String login(Member member);
     void join(Member member);
     Member getMemberByEmail(String email);
-    void updateMember(Member member);
+    void updateMember(Member member,String memberEmail);
     void withdrawal(Member member);
 }

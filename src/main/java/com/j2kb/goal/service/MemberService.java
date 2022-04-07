@@ -48,11 +48,15 @@ public class MemberService implements AbstractMemberService{
     }
 
     @Override
-    public void updateMember(Member member) {
-        try {
-            memberRepository.updateMember(member);
-        }catch (DataAccessException e){
-            throw new DuplicateMemberException("Member with email = "+member.getEmail() + "is not exist",e);
+    public void updateMember(Member member, String memberEmail) {
+        if (member.getEmail().contentEquals(memberEmail)) {
+            try {
+                memberRepository.updateMember(member);
+            } catch (DataAccessException e) {
+                throw new DuplicateMemberException("Member with email = " + member.getEmail() + "is not exist", e);
+            }
+        }else{
+            throw new RuntimeException("can not access other Member");
         }
     }
 
