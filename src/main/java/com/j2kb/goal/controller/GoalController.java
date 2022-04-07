@@ -56,20 +56,21 @@ public class GoalController {
     }
 
     @PostMapping("/cert/{goalId:[0-9]+}")
-    public void addCertificationByGoalId(@PathVariable long goalId, @RequestBody Certification certification, @RequestHeader("Authorization") String token){
+    public Certification addCertificationByGoalId(@PathVariable long goalId, @RequestBody Certification certification, @RequestHeader("Authorization") String token){
         String goalOwnerEmail = JwtBuilder.getEmailFromJwt(token);
         certService.addCert(certification,goalOwnerEmail);
+        return certService.getCertificationByGoalId(goalId).orElse(Certification.builder().build());
     }
 
     @PutMapping("/cert/success/{goalId:[0-9]+}")
-    public void successVerification(@PathVariable long goalId,@RequestHeader("Authorization") String token){
+    public boolean successVerification(@PathVariable long goalId,@RequestHeader("Authorization") String token){
         String goalOwnerEmail = JwtBuilder.getEmailFromJwt(token);
-        verfiService.success(goalId,goalOwnerEmail);
+        return verfiService.success(goalId,goalOwnerEmail);
     }
 
     @PutMapping("/cert/fail/{goalId:[0-9]+}")
-    public void failVerification(@PathVariable long goalId,@RequestHeader("Authorization") String token){
+    public boolean failVerification(@PathVariable long goalId,@RequestHeader("Authorization") String token){
         String goalOwnerEmail = JwtBuilder.getEmailFromJwt(token);
-        verfiService.fail(goalId,goalOwnerEmail);
+        return verfiService.fail(goalId,goalOwnerEmail);
     }
 }

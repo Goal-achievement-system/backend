@@ -1,6 +1,7 @@
 package com.j2kb.goal.repository;
 
 import com.j2kb.goal.dto.Goal;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ public interface GoalRepository {
 
     Goal insertGoal(Goal goal);
     Optional<Goal> selectGoalByGoalId(long GoalId);
+    Optional<Goal> selectGoalByGoalId(long GoalId, RowMapper<Goal> rowMapper);
 
     List<Goal> selectAllGoalsByEmail(String email);
     List<Goal> selectFailGoalsByEmail(String email);

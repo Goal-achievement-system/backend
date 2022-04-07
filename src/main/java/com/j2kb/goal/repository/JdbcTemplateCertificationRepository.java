@@ -25,9 +25,9 @@ public class JdbcTemplateCertificationRepository implements CertificationReposit
 
     @Override
     public void insertCertification(Certification certification) {
-        String sql = "insert into certification(goal_id,content,image,require_success_count,success_count,fail_count) values(?,?,?,?,?,?)";
+        String sql = "insert into certification(goal_id,content,image,require_success_count) values(?,?,?,?)";
         try{
-            jdbcTemplate.update(sql,certification.getGoalId(),certification.getContent(),certification.getImage(),certification.getRequireSuccessCount(),certification.getSuccessCount(),certification.getFailCount());
+            jdbcTemplate.update(sql,certification.getGoalId(),certification.getContent(),certification.getImage(),certification.getRequireSuccessCount());
         }catch (DataAccessException e){
             throw new DuplicateCertificationException("",e);
         }
