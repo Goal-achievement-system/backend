@@ -28,11 +28,18 @@ public class JwtBuilder {
         if(!isValid(jwt)){
             return "";
         }
-        String[] jwtArray = jwt.split(".");
+        String[] jwtArray = jwt.split("\\.");
         String header = jwtArray[0];
         String payload = jwtArray[1];
         String sign = jwtArray[2];
-        return new String(Base64.getDecoder().decode(payload));
+        payload =  new String(Base64.getDecoder().decode(payload));
+        try {
+            Map<String, Object> map = new ObjectMapper().readValue(payload, new TypeReference<Map<String, Object>>() {
+            });
+            return (String) map.get("email");
+        }catch (Exception e){
+            return "";
+        }
     }
     public static boolean isValid(String jwt){
         String[] jwtArray = jwt.split("\\.");
