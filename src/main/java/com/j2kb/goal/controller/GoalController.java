@@ -27,7 +27,7 @@ public class GoalController {
         this.verfiService = verfiService;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public Goal addNewGoal(@RequestBody Goal goal){
         return goalService.addGoal(goal);
     }
@@ -50,7 +50,7 @@ public class GoalController {
     }
 
     @GetMapping("/cert/{goalId:[0-9]+}")
-    public Certification getCertificationByGoalId(@PathVariable long goalId){ // ToDo 이메일은 제외해야 함.
+    public Certification getCertificationByGoalId(@PathVariable long goalId){
         Optional<Certification> result = certService.getCertificationByGoalId(goalId);
         return result.orElse(Certification.builder().build());
     }
@@ -61,14 +61,14 @@ public class GoalController {
         certService.addCert(certification,goalOwnerEmail);
     }
 
-    @PutMapping("/goals/cert/success/{goalId:[0-9]+}")
-    public void successVerification(long goalId,@RequestHeader("Authorization") String token){
+    @PutMapping("/cert/success/{goalId:[0-9]+}")
+    public void successVerification(@PathVariable long goalId,@RequestHeader("Authorization") String token){
         String goalOwnerEmail = JwtBuilder.getEmailFromJwt(token);
         verfiService.success(goalId,goalOwnerEmail);
     }
 
-    @PutMapping("/goals/cert/fail/{goalId:[0-9]+}")
-    public void failVerification(long goalId,@RequestHeader("Authorization") String token){
+    @PutMapping("/cert/fail/{goalId:[0-9]+}")
+    public void failVerification(@PathVariable long goalId,@RequestHeader("Authorization") String token){
         String goalOwnerEmail = JwtBuilder.getEmailFromJwt(token);
         verfiService.fail(goalId,goalOwnerEmail);
     }
