@@ -11,8 +11,10 @@ public interface GoalRepository {
     List<String> selectAllCategories();
 
     Goal insertGoal(Goal goal);
-    Optional<Goal> selectGoalByGoalId(long GoalId);
-    Optional<Goal> selectGoalByGoalId(long GoalId, RowMapper<Goal> rowMapper);
+    Optional<Goal> selectGoalByGoalId(long goalId);
+    Optional<Goal> selectGoalByGoalId(long goalId, RowMapper<Goal> rowMapper);
+
+    void updateGoalVerificationResult(long goalId, String result);
 
     List<Goal> selectAllGoalsByEmail(String email);
     List<Goal> selectFailGoalsByEmail(String email);

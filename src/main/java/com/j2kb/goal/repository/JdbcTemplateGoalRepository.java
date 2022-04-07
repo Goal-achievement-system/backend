@@ -81,6 +81,12 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
     }
 
     @Override
+    public void updateGoalVerificationResult(long goalId, String result) {
+        String sql = "update goal set verification_result = ? where goal_id = ?";
+        jdbcTemplate.update(sql,result,goalId);
+    }
+
+    @Override
     public List<Goal> selectAllGoalsByEmail(String email) {
         String sql = "select * from goal where member_email = ?";
         List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email);

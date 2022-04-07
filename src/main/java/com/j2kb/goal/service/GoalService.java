@@ -29,7 +29,13 @@ public class GoalService implements AbstractGoalService{
 
     @Override
     public Goal addGoal(Goal goal) {
-        return goalRepository.insertGoal(goal);
+        Member member = memberRepository.selectMemberByMemberEmail(goal.getMemberEmail());
+        if(member.getMoney()>=goal.getMoney()){
+            memberRepository.minusMoney(member,goal.getMoney());
+            return goalRepository.insertGoal(goal);
+        }else{
+            return Goal.builder().build();
+        }
     }
 
     @Override

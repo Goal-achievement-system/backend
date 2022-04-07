@@ -13,4 +13,5 @@ public class Certification {
     private byte requireSuccessCount;
     private byte successCount;
     private byte failCount;
+    private String verificationResult;
 }

@@ -64,6 +64,12 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
     }
 
     @Override
+    public void minusMoney(Member member, int money) {
+        String sql = "update member set money = money - ? where email = ?";
+        jdbcTemplate.update(sql,money,member.getEmail());
+    }
+
+    @Override
     public void updateMember(Member member) {
         String password = member.getPassword();
         Map<String,String> passwordAndSalt = passwordHashing(password);

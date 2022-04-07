@@ -64,13 +64,13 @@ public class GoalController {
 
     @PutMapping("/cert/success/{goalId:[0-9]+}")
     public boolean successVerification(@PathVariable long goalId,@RequestHeader("Authorization") String token){
-        String goalOwnerEmail = JwtBuilder.getEmailFromJwt(token);
-        return verfiService.success(goalId,goalOwnerEmail);
+        String requestEmail = JwtBuilder.getEmailFromJwt(token);
+        return verfiService.success(goalId,requestEmail);
     }
 
     @PutMapping("/cert/fail/{goalId:[0-9]+}")
     public boolean failVerification(@PathVariable long goalId,@RequestHeader("Authorization") String token){
-        String goalOwnerEmail = JwtBuilder.getEmailFromJwt(token);
-        return verfiService.fail(goalId,goalOwnerEmail);
+        String requestEmail = JwtBuilder.getEmailFromJwt(token);
+        return verfiService.fail(goalId,requestEmail);
     }
 }

@@ -85,7 +85,8 @@ public class JdbcTemplateCertificationRepository implements CertificationReposit
                     .image(rs.getString("image"))
                     .requireSuccessCount(rs.getByte("require_success_count"))
                     .successCount(rs.getByte("success_count"))
-                    .failCount(rs.getByte("fail_count"));
+                    .failCount(rs.getByte("fail_count"))
+                    .verificationResult(rs.getString("verification_result"));
             return (T) builder.build();
         }
     }
