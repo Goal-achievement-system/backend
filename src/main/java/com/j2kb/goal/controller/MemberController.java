@@ -44,10 +44,10 @@ public class MemberController {
         String email = JwtBuilder.getEmailFromJwt(token);
         return memberService.getMemberByEmail(email);
     }
-    @GetMapping("/myinfo/goals/{state}")
-    public List<Goal> getMyGoals(@RequestHeader("Authorization") String token, @PathVariable String state){
+    @GetMapping("/myinfo/goals/{state}/{page:[0-9]+}")
+    public List<Goal> getMyGoals(@RequestHeader("Authorization") String token, @PathVariable String state,@PathVariable int page){
         String email = JwtBuilder.getEmailFromJwt(token);
-        return goalService.getGoalsByEmailAndState(email,state);
+        return goalService.getGoalsByEmailAndState(email,state,page);
     }
     @GetMapping("/myinfo/notifications")
     public List<Notification> getMyGoals(@RequestHeader("Authorization") String token){

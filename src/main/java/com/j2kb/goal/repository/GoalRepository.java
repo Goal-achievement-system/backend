@@ -16,17 +16,17 @@ public interface GoalRepository {
 
     void updateGoalVerificationResult(long goalId, String result);
 
-    List<Goal> selectAllGoalsByEmail(String email);
-    List<Goal> selectFailGoalsByEmail(String email);
-    List<Goal> selectSuccessGoalsByEmail(String email);
-    List<Goal> selectOnGoingGoalsByEmail(String email);
-    List<Goal> selectHoldGoalsByEmail(String email);
+    List<Goal> selectAllGoalsByEmail(String email,int page);
+    List<Goal> selectFailGoalsByEmail(String email,int page);
+    List<Goal> selectSuccessGoalsByEmail(String email,int page);
+    List<Goal> selectOnGoingGoalsByEmail(String email,int page);
+    List<Goal> selectHoldGoalsByEmail(String email,int page);
     
-    List<Goal> selectAllGoalsByCategory(String category);
-    List<Goal> selectFailGoalsByCategory(String category);
-    List<Goal> selectSuccessGoalsByCategory(String category);
-    List<Goal> selectOnGoingGoalsByCategory(String category);
-    List<Goal> selectHoldGoalsByCategory(String category);
+    List<Goal> selectAllGoalsByCategory(String category,int page);
+    List<Goal> selectFailGoalsByCategory(String category,int page);
+    List<Goal> selectSuccessGoalsByCategory(String category,int page);
+    List<Goal> selectOnGoingGoalsByCategory(String category,int page);
+    List<Goal> selectHoldGoalsByCategory(String category,int page);
     
     long selectAllGoalsCount();
     long selectAllSuccessGoalsCount();

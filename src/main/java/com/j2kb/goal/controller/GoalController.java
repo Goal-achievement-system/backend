@@ -43,9 +43,9 @@ public class GoalController {
         return goal;
     }
 
-    @GetMapping("/{category}/list/{state}")
-    public List<Goal> getGoalsByCategory(@PathVariable String category, @PathVariable String state){
-        List<Goal> result = goalService.getGoalsByCategoryAndState(category,state);
+    @GetMapping("/{category}/list/{state}/{page:[0-9]+}")
+    public List<Goal> getGoalsByCategory(@PathVariable String category, @PathVariable String state, @PathVariable int page){
+        List<Goal> result = goalService.getGoalsByCategoryAndState(category,state,page);
         return result;
     }
 

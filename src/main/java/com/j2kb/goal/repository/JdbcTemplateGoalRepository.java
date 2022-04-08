@@ -21,7 +21,8 @@ import java.util.Optional;
 @Repository
 public class JdbcTemplateGoalRepository implements GoalRepository{
     private JdbcTemplate jdbcTemplate;
-
+    private static final int MYINFO_GOAL_COUNT=6;
+    private static final int GOAL_COUNT=9;
     @Autowired
     public JdbcTemplateGoalRepository(DataSource dataSource){
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -87,72 +88,82 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
     }
 
     @Override
-    public List<Goal> selectAllGoalsByEmail(String email) {
-        String sql = "select * from goal where member_email = ?";
-        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email);
+    public List<Goal> selectAllGoalsByEmail(String email,int page) {
+        int start = (page-1) * MYINFO_GOAL_COUNT;
+        String sql = "select * from goal where member_email = ? limit ?,?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email,start,MYINFO_GOAL_COUNT);
         return results;
     }
 
     @Override
-    public List<Goal> selectFailGoalsByEmail(String email) {
-        String sql = "select * from goal where verification_result = 'fail' and member_email = ?";
-        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email);
+    public List<Goal> selectFailGoalsByEmail(String email,int page) {
+        int start = (page-1) * MYINFO_GOAL_COUNT;
+        String sql = "select * from goal where verification_result = 'fail' and member_email = ? limit ?,?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email,start,MYINFO_GOAL_COUNT);
         return results;
     }
 
     @Override
-    public List<Goal> selectSuccessGoalsByEmail(String email) {
-        String sql = "select * from goal where verification_result = 'success' and member_email = ?";
-        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email);
+    public List<Goal> selectSuccessGoalsByEmail(String email,int page) {
+        int start = (page-1) * MYINFO_GOAL_COUNT;
+        String sql = "select * from goal where verification_result = 'success' and member_email = ? limit ?,?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email,start,MYINFO_GOAL_COUNT);
         return results;
     }
 
     @Override
-    public List<Goal> selectOnGoingGoalsByEmail(String email) {
-        String sql = "select * from goal where verification_result = 'ongoing' and member_email = ?";
-        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email);
+    public List<Goal> selectOnGoingGoalsByEmail(String email,int page) {
+        int start = (page-1) * MYINFO_GOAL_COUNT;
+        String sql = "select * from goal where verification_result = 'ongoing' and member_email = ? limit ?,?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email,start,MYINFO_GOAL_COUNT);
         return results;
     }
 
     @Override
-    public List<Goal> selectHoldGoalsByEmail(String email) {
-        String sql = "select * from goal where verification_result = 'hold' and member_email = ?";
-        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email);
+    public List<Goal> selectHoldGoalsByEmail(String email,int page) {
+        int start = (page-1) * MYINFO_GOAL_COUNT;
+        String sql = "select * from goal where verification_result = 'hold' and member_email = ? limit ?,?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),email,start,MYINFO_GOAL_COUNT);
         return results;
     }
 
     @Override
-    public List<Goal> selectAllGoalsByCategory(String category) {
-        String sql = "select * from goal where category = ?";
-        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category);
+    public List<Goal> selectAllGoalsByCategory(String category,int page) {
+        int start = (page-1) * GOAL_COUNT;
+        String sql = "select * from goal where category = ? limit ?,?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,GOAL_COUNT);
         return results;
     }
 
     @Override
-    public List<Goal> selectFailGoalsByCategory(String category) {
-        String sql = "select * from goal where verification_result = 'fail' and category = ?";
-        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category);
+    public List<Goal> selectFailGoalsByCategory(String category,int page) {
+        int start = (page-1) * GOAL_COUNT;
+        String sql = "select * from goal where verification_result = 'fail' and category = ? limit ?,?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,GOAL_COUNT);
         return results;
     }
 
     @Override
-    public List<Goal> selectSuccessGoalsByCategory(String category) {
-        String sql = "select * from goal where verification_result = 'success' and category = ?";
-        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category);
+    public List<Goal> selectSuccessGoalsByCategory(String category,int page) {
+        int start = (page-1) * GOAL_COUNT;
+        String sql = "select * from goal where verification_result = 'success' and category = ? limit ?,?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,GOAL_COUNT);
         return results;
     }
 
     @Override
-    public List<Goal> selectOnGoingGoalsByCategory(String category) {
-        String sql = "select * from goal where verification_result = 'ongoing' and category = ?";
-        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category);
+    public List<Goal> selectOnGoingGoalsByCategory(String category,int page) {
+        int start = (page-1) * GOAL_COUNT;
+        String sql = "select * from goal where verification_result = 'ongoing' and category = ? limit ?,?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,GOAL_COUNT);
         return results;
     }
 
     @Override
-    public List<Goal> selectHoldGoalsByCategory(String category) {
-        String sql = "select * from goal where verification_result = 'hold' and category = ?";
-        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category);
+    public List<Goal> selectHoldGoalsByCategory(String category,int page) {
+        int start = (page-1) * GOAL_COUNT;
+        String sql = "select * from goal where verification_result = 'hold' and category = ? limit ?,?";
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,GOAL_COUNT);
         return results;
     }
 

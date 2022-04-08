@@ -39,7 +39,7 @@ public class GoalService implements AbstractGoalService{
     }
 
     @Override
-    public List<Goal> getGoalsByCategoryAndState(String category, String state) {
+    public List<Goal> getGoalsByCategoryAndState(String category, String state, int page) {
         List<Goal> result = Collections.emptyList();
         List<String> categories = goalRepository.selectAllCategories();
         if(!categories.contains(category)){
@@ -47,19 +47,19 @@ public class GoalService implements AbstractGoalService{
         }
         switch (state){
             case "all":
-                result = goalRepository.selectAllGoalsByCategory(category);
+                result = goalRepository.selectAllGoalsByCategory(category,page);
                 break;
             case "success":
-                result = goalRepository.selectSuccessGoalsByCategory(category);
+                result = goalRepository.selectSuccessGoalsByCategory(category,page);
                 break;
             case "fail" :
-                result = goalRepository.selectFailGoalsByCategory(category);
+                result = goalRepository.selectFailGoalsByCategory(category,page);
                 break;
             case "ongoing":
-                result = goalRepository.selectOnGoingGoalsByCategory(category);
+                result = goalRepository.selectOnGoingGoalsByCategory(category,page);
                 break;
             case  "hold":
-                result = goalRepository.selectHoldGoalsByCategory(category);
+                result = goalRepository.selectHoldGoalsByCategory(category,page);
                 break;
             default:
                 throw new IllegalArgumentException("illegal State");
@@ -68,7 +68,7 @@ public class GoalService implements AbstractGoalService{
     }
 
     @Override
-    public List<Goal> getGoalsByEmailAndState(String email, String state) {
+    public List<Goal> getGoalsByEmailAndState(String email, String state,int page) {
         List<Goal> result = Collections.emptyList();
         try{
             Member member = memberRepository.selectMemberByMemberEmail(email);
@@ -78,19 +78,19 @@ public class GoalService implements AbstractGoalService{
 
         switch (state){
             case "all":
-                result = goalRepository.selectAllGoalsByEmail(email);
+                result = goalRepository.selectAllGoalsByEmail(email,page);
                 break;
             case "success":
-                result = goalRepository.selectSuccessGoalsByEmail(email);
+                result = goalRepository.selectSuccessGoalsByEmail(email,page);
                 break;
             case "fail" :
-                result = goalRepository.selectFailGoalsByEmail(email);
+                result = goalRepository.selectFailGoalsByEmail(email,page);
                 break;
             case "ongoing":
-                result = goalRepository.selectOnGoingGoalsByEmail(email);
+                result = goalRepository.selectOnGoingGoalsByEmail(email,page);
                 break;
             case  "hold":
-                result = goalRepository.selectHoldGoalsByEmail(email);
+                result = goalRepository.selectHoldGoalsByEmail(email,page);
                 break;
             default:
                 throw new IllegalArgumentException("illegal State");
