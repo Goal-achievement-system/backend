@@ -1,13 +1,8 @@
 package com.j2kb.goal.service;
 
-import com.j2kb.goal.dto.Certification;
-import com.j2kb.goal.dto.Goal;
-import com.j2kb.goal.dto.Verification;
+import com.j2kb.goal.dto.*;
 import com.j2kb.goal.exception.NoMatchedCertificationException;
-import com.j2kb.goal.repository.CertificationRepository;
-import com.j2kb.goal.repository.GoalRepository;
-import com.j2kb.goal.repository.GoalRowMapperIncludeEmail;
-import com.j2kb.goal.repository.VerificationRepository;
+import com.j2kb.goal.repository.*;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +11,14 @@ public class VerfiService implements AbstractVerfiService{
     private CertificationRepository certificationRepository;
     private GoalRepository goalRepository;
     private VerificationRepository verificationRepository;
-    public VerfiService(CertificationRepository certificationRepository,GoalRepository goalRepository,VerificationRepository verificationRepository){
+    private MemberRepository memberRepository;
+    private NotificationRepository notificationRepository;
+    public VerfiService(CertificationRepository certificationRepository,GoalRepository goalRepository,VerificationRepository verificationRepository,MemberRepository memberRepository,NotificationRepository notificationRepository){
         this.certificationRepository = certificationRepository;
         this.goalRepository = goalRepository;
         this.verificationRepository = verificationRepository;
+        this.memberRepository = memberRepository;
+        this.notificationRepository = notificationRepository;
     }
     @Override
     public boolean success(long goalId,String requestEmail) {
@@ -34,6 +33,14 @@ public class VerfiService implements AbstractVerfiService{
                 String certificationVerificationResult = certification.getVerificationResult();
                 if(!goal.getVerificationResult().contentEquals(certificationVerificationResult)){
                     goalRepository.updateGoalVerificationResult(goalId,certificationVerificationResult);
+                }
+                if(certification.getVerificationResult().contentEquals("success")){
+                    Member member = memberRepository.selectMemberByMemberEmail(requestEmail);
+                    memberRepository.plusMoney(member,(int)(goal.getMoney()*1.5));
+                    Notification.NotificationBuilder builder = Notification.builder();
+                    builder.memberEmail(goal.getMemberEmail())
+                            .content("목표달성에 성공했습니다. 상금이 지급되었습니다.");
+                    notificationRepository.insertNotification(builder.build());
                 }
             } catch (DataAccessException e) {
                 e.printStackTrace();
@@ -56,6 +63,12 @@ public class VerfiService implements AbstractVerfiService{
                 String certificationVerificationResult = certification.getVerificationResult();
                 if(!goal.getVerificationResult().contentEquals(certificationVerificationResult)){
                     goalRepository.updateGoalVerificationResult(goalId,certificationVerificationResult);
+                }
+                if(certification.getVerificationResult().contentEquals("hold")){
+                    Notification.NotificationBuilder builder = Notification.builder();
+                    builder.memberEmail(goal.getMemberEmail())
+                            .content("실패검증 횟수가 누적되어 인증이 보류되었습니다. 이의제기 하기 전 까지 판정이 보류됩니다.");
+                    notificationRepository.insertNotification(builder.build());
                 }
             } catch (DataAccessException e) {
                 e.printStackTrace();
