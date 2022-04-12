@@ -21,10 +21,14 @@ public class MemberService implements AbstractMemberService{
 
     @Override
     public String login(Member member) {
-        if(memberRepository.login(member)){
-            return JwtBuilder.build(member.getEmail());
-        }else{
-            return "";
+        try {
+            if (memberRepository.login(member)) {
+                return JwtBuilder.build(member.getEmail());
+            } else {
+                throw new IllegalStateException("login fail");
+            }
+        }catch (DataAccessException e){
+            throw new IllegalStateException("login fail");
         }
     }
 
