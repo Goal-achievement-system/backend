@@ -43,11 +43,7 @@ public class JdbcTemplateCertificationRepository implements CertificationReposit
     public Optional<Certification> selectCertificationByGoalId(long goalId) {
         String sql = "select * from certification where goal_id = ?";
         Certification certification;
-        try {
-            certification = jdbcTemplate.queryForObject(sql, new CertificationRowMapper<Certification>(), goalId);
-        }catch (Exception e){
-            certification = null;
-        }
+        certification = jdbcTemplate.queryForObject(sql, new CertificationRowMapper<Certification>(), goalId);
         return Optional.ofNullable(certification);
     }
 

@@ -28,7 +28,10 @@ public class GoalService implements AbstractGoalService{
     }
 
     @Override
-    public Goal addGoal(Goal goal) {
+    public Goal addGoal(Goal goal, String email) {
+        if(!email.contentEquals(goal.getMemberEmail())){
+            throw new IllegalArgumentException("");
+        }
         Member member = memberRepository.selectMemberByMemberEmail(goal.getMemberEmail());
         if(member.getMoney()>=goal.getMoney()){
             memberRepository.minusMoney(member,goal.getMoney());
