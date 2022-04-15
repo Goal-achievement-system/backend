@@ -42,6 +42,9 @@ public class GoalController {
         }catch (IllegalArgumentException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }catch (NoMatchedCategoryException e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
@@ -96,13 +99,13 @@ public class GoalController {
             return ResponseEntity.ok(certService.getCertificationByGoalId(goalId).orElseThrow());
         }catch (PermissionException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }catch (DuplicateCertificationException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }catch (DataAccessException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         }
     }
 

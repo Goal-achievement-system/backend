@@ -32,6 +32,10 @@ public class GoalService implements AbstractGoalService{
         if(!email.contentEquals(goal.getMemberEmail())){
             throw new IllegalArgumentException("");
         }
+        List<String> categories = goalRepository.selectAllCategories();
+        if(!categories.contains(goal.getCategory())){
+            throw new NoMatchedCategoryException(goal.getCategory()+" is not found");
+        }
         Member member = memberRepository.selectMemberByMemberEmail(goal.getMemberEmail());
         if(member.getMoney()>=goal.getMoney()){
             memberRepository.minusMoney(member,goal.getMoney());
