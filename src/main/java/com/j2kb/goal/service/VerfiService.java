@@ -5,6 +5,7 @@ import com.j2kb.goal.exception.NoMatchedCertificationException;
 import com.j2kb.goal.repository.*;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VerfiService implements AbstractVerfiService{
@@ -20,8 +21,9 @@ public class VerfiService implements AbstractVerfiService{
         this.memberRepository = memberRepository;
         this.notificationRepository = notificationRepository;
     }
+    @Transactional
     @Override
-    public boolean success(long goalId,String requestEmail) {
+    public void success(long goalId,String requestEmail) {
         Goal goal = goalRepository.selectGoalByGoalId(goalId, new GoalRowMapperIncludeEmail()).orElse(Goal.builder().build());
         if(canVerfication(goal,requestEmail)) {
             try {
@@ -43,15 +45,14 @@ public class VerfiService implements AbstractVerfiService{
                     notificationRepository.insertNotification(builder.build());
                 }
             } catch (DataAccessException e) {
-                e.printStackTrace();
-                return false;
+                throw e;
             }
         }
-        return true;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public boolean fail(long goalId,String requestEmail) {
+    public void fail(long goalId,String requestEmail) {
         Goal goal = goalRepository.selectGoalByGoalId(goalId,new GoalRowMapperIncludeEmail()).orElse(Goal.builder().build());
         if(canVerfication(goal,requestEmail)) {
             try {
@@ -72,10 +73,9 @@ public class VerfiService implements AbstractVerfiService{
                 }
             } catch (DataAccessException e) {
                 e.printStackTrace();
-                return false;
+                throw e;
             }
         }
-        return true;
     }
 
     private boolean canVerfication(Goal goal, String requestEmail){

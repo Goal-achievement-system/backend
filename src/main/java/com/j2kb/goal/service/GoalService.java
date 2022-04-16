@@ -8,6 +8,7 @@ import com.j2kb.goal.repository.GoalRepository;
 import com.j2kb.goal.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +27,7 @@ public class GoalService implements AbstractGoalService{
     public Optional<Goal> getGoalByGoalId(long goalId) {
         return goalRepository.selectGoalByGoalId(goalId);
     }
-
+    @Transactional
     @Override
     public Goal addGoal(Goal goal, String email) {
         if(!email.contentEquals(goal.getMemberEmail())){

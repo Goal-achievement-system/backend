@@ -112,9 +112,10 @@ public class GoalController {
     @PutMapping("/cert/success/{goalId:[0-9]+}")
     public ResponseEntity<Boolean> successVerification(@PathVariable long goalId,@RequestHeader("Authorization") String token){
         String requestEmail = JwtBuilder.getEmailFromJwt(token);
-        if(verfiService.success(goalId,requestEmail)){
+        try{
+            verfiService.success(goalId,requestEmail);
             return ResponseEntity.ok().build();
-        }else{
+        }catch (DataAccessException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
@@ -122,9 +123,10 @@ public class GoalController {
     @PutMapping("/cert/fail/{goalId:[0-9]+}")
     public ResponseEntity<Boolean> failVerification(@PathVariable long goalId, @RequestHeader("Authorization") String token){
         String requestEmail = JwtBuilder.getEmailFromJwt(token);
-        if(verfiService.fail(goalId,requestEmail)){
+        try{
+            verfiService.fail(goalId,requestEmail);
             return ResponseEntity.ok().build();
-        }else{
+        }catch (DataAccessException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
