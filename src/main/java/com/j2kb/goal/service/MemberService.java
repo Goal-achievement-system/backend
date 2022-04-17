@@ -72,4 +72,22 @@ public class MemberService implements AbstractMemberService{
             throw new DuplicateMemberException("Member with email = "+member.getEmail() + "is not exist",e);
         }
     }
+
+    @Override
+    public void chargeMoney(Member member) {
+        if(memberRepository.login(member)){
+            memberRepository.plusMoney(member,member.getMoney());
+        }else{
+            throw new NoMatchedMemberException("email or password is wrong");
+        }
+    }
+
+    @Override
+    public void refundMoney(Member member) {
+        if(memberRepository.login(member)){
+            memberRepository.minusMoney(member,member.getMoney());
+        }else{
+            throw new NoMatchedMemberException("email or password is wrong");
+        }
+    }
 }

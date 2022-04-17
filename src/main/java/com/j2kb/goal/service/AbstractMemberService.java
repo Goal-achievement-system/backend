@@ -8,4 +8,6 @@ public interface AbstractMemberService {
     Member getMemberByEmail(String email);
     void updateMember(Member member,String memberEmail);
     void withdrawal(Member member);
+    void chargeMoney(Member member);
+    void refundMoney(Member member);
 }

@@ -97,4 +97,22 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+    @PutMapping("/myinfo/charge")
+    public ResponseEntity<?> chargeMoney(@RequestHeader("Authorization") String token, @RequestBody Member member){
+        try{
+            memberService.chargeMoney(member);
+            return ResponseEntity.ok().build();
+        }catch (NoMatchedMemberException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+    @PutMapping("/myinfo/refund")
+    public ResponseEntity<?> refundMoney(@RequestHeader("Authorization") String token, @RequestBody Member member){
+        try{
+            memberService.refundMoney(member);
+            return ResponseEntity.ok().build();
+        }catch (NoMatchedMemberException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
 }
