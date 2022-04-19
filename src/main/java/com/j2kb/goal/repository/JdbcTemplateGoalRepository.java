@@ -195,6 +195,41 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
         return result;
     }
 
+    @Override
+    public long selectMemberGoalsCount(String email) {
+        String sql = "select count(*) from goal where email = ?";
+        Long result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong(1),email);
+        return result;
+    }
+
+    @Override
+    public long selectMemberSuccessGoalsCount(String email) {
+        String sql = "select count(*) from goal where verification_result = 'success' and email = ?";
+        Long result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong(1),email);
+        return result;
+    }
+
+    @Override
+    public long selectMemberFailGoalsCount(String email) {
+        String sql = "select count(*) from goal where verification_result = 'fail' and email = ?";
+        Long result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong(1),email);
+        return result;
+    }
+
+    @Override
+    public long selectMemberOngoingGoalsCount(String email) {
+        String sql = "select count(*) from goal where verification_result = 'ongoing' and email = ?";
+        Long result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong(1),email);
+        return result;
+    }
+
+    @Override
+    public long selectMemberHoldGoalsCount(String email) {
+        String sql = "select count(*) from goal where verification_result = 'hold' and email = ?";
+        Long result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong(1),email);
+        return result;
+    }
+
 
     private class GoalRowMapper<T extends Goal> implements RowMapper<T>{
         @Override

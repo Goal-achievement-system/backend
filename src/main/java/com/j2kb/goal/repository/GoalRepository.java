@@ -32,4 +32,10 @@ public interface GoalRepository {
     long selectAllSuccessGoalsCount();
     long selectAllFailGoalsCount();
     long selectAllOngoingGoalsCount();
+    
+    long selectMemberGoalsCount(String email);
+    long selectMemberSuccessGoalsCount(String email);
+    long selectMemberFailGoalsCount(String email);
+    long selectMemberOngoingGoalsCount(String email);
+    long selectMemberHoldGoalsCount(String email);
 }
