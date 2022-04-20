@@ -32,7 +32,7 @@ public class StatisticsController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/mine}")
+    @GetMapping("/mine")
     public ResponseEntity<?> getMemberStatistics(@RequestHeader("Authorization") String token){
         String email = JwtBuilder.getEmailFromJwt(token);
         long totalGoalCount = statisticsService.getMemberGoalsCount(email);

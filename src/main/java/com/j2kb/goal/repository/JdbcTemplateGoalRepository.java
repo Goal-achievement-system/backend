@@ -197,35 +197,35 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
 
     @Override
     public long selectMemberGoalsCount(String email) {
-        String sql = "select count(*) from goal where email = ?";
+        String sql = "select count(*) from goal where member_email = ?";
         Long result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong(1),email);
         return result;
     }
 
     @Override
     public long selectMemberSuccessGoalsCount(String email) {
-        String sql = "select count(*) from goal where verification_result = 'success' and email = ?";
+        String sql = "select count(*) from goal where verification_result = 'success' and member_email = ?";
         Long result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong(1),email);
         return result;
     }
 
     @Override
     public long selectMemberFailGoalsCount(String email) {
-        String sql = "select count(*) from goal where verification_result = 'fail' and email = ?";
+        String sql = "select count(*) from goal where verification_result = 'fail' and member_email = ?";
         Long result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong(1),email);
         return result;
     }
 
     @Override
     public long selectMemberOngoingGoalsCount(String email) {
-        String sql = "select count(*) from goal where verification_result = 'ongoing' and email = ?";
+        String sql = "select count(*) from goal where verification_result = 'ongoing' and member_email = ?";
         Long result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong(1),email);
         return result;
     }
 
     @Override
     public long selectMemberHoldGoalsCount(String email) {
-        String sql = "select count(*) from goal where verification_result = 'hold' and email = ?";
+        String sql = "select count(*) from goal where verification_result = 'hold' and member_email = ?";
         Long result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong(1),email);
         return result;
     }
