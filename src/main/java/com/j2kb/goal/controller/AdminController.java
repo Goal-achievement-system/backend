@@ -39,19 +39,19 @@ public class AdminController {
             return ResponseEntity.internalServerError().build();
         }
     }
-    @PutMapping("/goals/cert/success/{certId:[0-9]+}")
-    public ResponseEntity<?> successGoal(@PathVariable long certId){
+    @PutMapping("/goals/cert/success/{goalId:[0-9]+}")
+    public ResponseEntity<?> successGoal(@PathVariable long goalId){
         try {
-            adminService.successGoal(certId);
+            adminService.successGoal(goalId);
             return ResponseEntity.ok().build();
         }catch (Exception e){
             return ResponseEntity.internalServerError().build();
         }
     }
-    @PutMapping("/goals/cert/fail/{certId:[0-9]+}")
-    public ResponseEntity<?> failGoal(@PathVariable long certId){
+    @PutMapping("/goals/cert/fail/{goalId:[0-9]+}")
+    public ResponseEntity<?> failGoal(@PathVariable long goalId){
         try {
-            adminService.failGoal(certId);
+            adminService.failGoal(goalId);
             return ResponseEntity.ok().build();
         }catch (Exception e){
             return ResponseEntity.internalServerError().build();
