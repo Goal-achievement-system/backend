@@ -8,9 +8,10 @@ import com.j2kb.goal.exception.NoMatchedGoalException;
 import com.j2kb.goal.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class AdminService implements AbstractAdminService{
 
     private AdminRepository adminRepository;
