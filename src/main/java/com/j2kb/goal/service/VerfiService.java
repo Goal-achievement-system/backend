@@ -37,7 +37,7 @@ public class VerfiService implements AbstractVerfiService{
                     goalRepository.updateGoalVerificationResult(goalId,certificationVerificationResult);
                 }
                 if(certification.getVerificationResult().contentEquals("success")){
-                    Member member = memberRepository.selectMemberByMemberEmail(requestEmail);
+                    Member member = memberRepository.selectMemberByMemberEmail(goal.getMemberEmail());
                     memberRepository.plusMoney(member,(int)(goal.getMoney()*1.5));
                     Notification.NotificationBuilder builder = Notification.builder();
                     builder.memberEmail(goal.getMemberEmail())
