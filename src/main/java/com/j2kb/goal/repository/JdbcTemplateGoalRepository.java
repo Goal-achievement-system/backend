@@ -64,8 +64,7 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
         }catch (Exception e){
             goal = null;
         }
-        Optional<Goal> ret = Optional.ofNullable(goal);
-        return ret;
+        return Optional.ofNullable(goal);
     }
 
     @Override
@@ -77,8 +76,7 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
         }catch (Exception e){
             goal = null;
         }
-        Optional<Goal> ret = Optional.ofNullable(goal);
-        return ret;
+        return Optional.ofNullable(goal);
     }
 
     @Override
