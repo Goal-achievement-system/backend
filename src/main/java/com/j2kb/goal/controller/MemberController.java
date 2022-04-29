@@ -5,9 +5,7 @@ import com.j2kb.goal.dto.Member;
 import com.j2kb.goal.dto.Notification;
 import com.j2kb.goal.exception.DuplicateMemberException;
 import com.j2kb.goal.exception.NoMatchedMemberException;
-import com.j2kb.goal.service.GoalService;
-import com.j2kb.goal.service.MemberService;
-import com.j2kb.goal.service.NotificationService;
+import com.j2kb.goal.service.*;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,9 +19,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/members")
 public class MemberController {
-    private MemberService memberService;
-    private NotificationService notificationService;
-    private GoalService goalService;
+    private AbstractMemberService memberService;
+    private AbstractNotificationService notificationService;
+    private AbstractGoalService goalService;
 
     @Autowired
     public MemberController(MemberService memberService, NotificationService notificationService, GoalService goalService) {

@@ -5,9 +5,7 @@ import com.j2kb.goal.dto.Goal;
 import com.j2kb.goal.exception.DuplicateCertificationException;
 import com.j2kb.goal.exception.NoMatchedCategoryException;
 import com.j2kb.goal.exception.PermissionException;
-import com.j2kb.goal.service.CertService;
-import com.j2kb.goal.service.GoalService;
-import com.j2kb.goal.service.VerfiService;
+import com.j2kb.goal.service.*;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -23,9 +21,9 @@ import java.util.Optional;
 @RequestMapping("/api/goals")
 public class GoalController {
 
-    private GoalService goalService;
-    private CertService certService;
-    private VerfiService verfiService;
+    private AbstractGoalService goalService;
+    private AbstractCertService certService;
+    private AbstractVerfiService verfiService;
 
     @Autowired
     public GoalController(GoalService goalService,CertService certService, VerfiService verfiService){
