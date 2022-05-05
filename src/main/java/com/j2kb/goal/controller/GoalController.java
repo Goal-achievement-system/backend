@@ -3,6 +3,7 @@ package com.j2kb.goal.controller;
 import com.j2kb.goal.dto.Certification;
 import com.j2kb.goal.dto.Goal;
 import com.j2kb.goal.exception.DuplicateCertificationException;
+import com.j2kb.goal.exception.MoneyOverflowException;
 import com.j2kb.goal.exception.NoMatchedCategoryException;
 import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.service.*;
@@ -37,12 +38,15 @@ public class GoalController {
         String email = JwtBuilder.getEmailFromJwt(token);
         try {
             return ResponseEntity.ok(goalService.addGoal(goal, email));
-        }catch (IllegalArgumentException e){
+        }catch (PermissionException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }catch (NoMatchedCategoryException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }catch (MoneyOverflowException e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 

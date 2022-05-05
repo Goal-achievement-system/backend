@@ -2,8 +2,10 @@ package com.j2kb.goal.service;
 
 import com.j2kb.goal.dto.Goal;
 import com.j2kb.goal.dto.Member;
+import com.j2kb.goal.exception.MoneyOverflowException;
 import com.j2kb.goal.exception.NoMatchedCategoryException;
 import com.j2kb.goal.exception.NoMatchedMemberException;
+import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.repository.GoalRepository;
 import com.j2kb.goal.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,7 @@ public class GoalService implements AbstractGoalService{
     @Override
     public Goal addGoal(Goal goal, String email) {
         if(!email.contentEquals(goal.getMemberEmail())){
-            throw new IllegalArgumentException("");
+            throw new PermissionException("adding other member's goal is impossible");
         }
         List<String> categories = goalRepository.selectAllCategories();
         if(!categories.contains(goal.getCategory())){
@@ -42,7 +44,7 @@ public class GoalService implements AbstractGoalService{
             memberRepository.minusMoney(member,goal.getMoney());
             return goalRepository.insertGoal(goal);
         }else{
-            return Goal.builder().build();
+            throw new MoneyOverflowException("money overflow");
         }
     }
 
