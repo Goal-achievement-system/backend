@@ -9,6 +9,7 @@ import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.repository.GoalRepository;
 import com.j2kb.goal.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,7 +83,7 @@ public class GoalService implements AbstractGoalService{
         List<Goal> result = Collections.emptyList();
         try{
             Member member = memberRepository.selectMemberByMemberEmail(email);
-        }catch (IllegalStateException e){
+        }catch (DataAccessException e){
             throw new NoMatchedMemberException("member with "+email +" is not exist",e);
         }
 
