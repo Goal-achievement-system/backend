@@ -5,6 +5,7 @@ import com.j2kb.goal.dto.Member;
 import com.j2kb.goal.dto.Notification;
 import com.j2kb.goal.exception.DuplicateMemberException;
 import com.j2kb.goal.exception.NoMatchedMemberException;
+import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.service.*;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,19 +68,22 @@ public class MemberController {
         try {
             String email = JwtBuilder.getEmailFromJwt(token);
             return ResponseEntity.ok(goalService.getGoalsByEmailAndState(email, state, page));
-        }catch (RuntimeException e){
+        }catch (NoMatchedMemberException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
     @GetMapping("/myinfo/notifications")
-    public ResponseEntity<?> getMyGoals(@RequestHeader("Authorization") String token){
+    public ResponseEntity<?> getMyNotifications(@RequestHeader("Authorization") String token){
         try {
             String email = JwtBuilder.getEmailFromJwt(token);
             return ResponseEntity.ok(notificationService.getNotificationsByEmail(email));
         }catch (RuntimeException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     @PutMapping("/myinfo")
@@ -91,7 +95,7 @@ public class MemberController {
         }catch (NoMatchedMemberException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }catch (RuntimeException e){
+        }catch (PermissionException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }

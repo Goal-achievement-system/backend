@@ -3,6 +3,7 @@ package com.j2kb.goal.service;
 import com.j2kb.goal.dto.Member;
 import com.j2kb.goal.exception.DuplicateMemberException;
 import com.j2kb.goal.exception.NoMatchedMemberException;
+import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.repository.MemberRepository;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,10 +58,10 @@ public class MemberService implements AbstractMemberService{
             try {
                 memberRepository.updateMember(member);
             } catch (DataAccessException e) {
-                throw new DuplicateMemberException("Member with email = " + member.getEmail() + "is not exist", e);
+                throw new NoMatchedMemberException("Member with email = " + member.getEmail() + "is not exist", e);
             }
         }else{
-            throw new RuntimeException("can not access other Member");
+            throw new PermissionException("can not access other Member");
         }
     }
 
