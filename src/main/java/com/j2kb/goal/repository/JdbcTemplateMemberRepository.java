@@ -23,7 +23,7 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
 
     @Override
     public void insertMember(Member member) {
-        String sql = "insert into Member values(?,?,?,?,?,?,?)";
+        String sql = "insert into member values(?,?,?,?,?,?,?)";
         String password = member.getPassword();
         Map<String,String> passwordAndSalt = passwordHashing(password);
         password = passwordAndSalt.get("password");
