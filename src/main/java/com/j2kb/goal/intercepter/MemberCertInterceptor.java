@@ -4,6 +4,7 @@ package com.j2kb.goal.intercepter;
 import com.j2kb.goal.repository.MemberRepository;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,6 +19,9 @@ public class MemberCertInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+        if(HttpMethod.OPTIONS.matches(request.getMethod())){
+            return true;
+        }
         String auth = request.getHeader("Authorization");
         if(JwtBuilder.isValid(auth)){
             return true;

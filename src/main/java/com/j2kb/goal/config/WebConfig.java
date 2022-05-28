@@ -19,9 +19,20 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private DataSource dataSource;
 
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**").allowedMethods("POST","GET","PUT","DELETE","OPTIONS");
+//            }
+//        };
+//    }
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**").allowedOrigins("*");
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*");
     }
 
     @Override
