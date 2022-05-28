@@ -130,7 +130,7 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
         int start = (page-1) * GOAL_COUNT;
         String sql = "select * from goal where category = ? limit ?,?";
         if(category.equalsIgnoreCase("all")){
-            sql = sql.replace(" where category = ? "," ");
+            sql = sql.replace("category = ?","category != ?");
         }
         List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,GOAL_COUNT);
         return results;
@@ -141,7 +141,7 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
         int start = (page-1) * GOAL_COUNT;
         String sql = "select * from goal where verification_result = 'fail' and category = ? limit ?,?";
         if(category.equalsIgnoreCase("all")){
-            sql = sql.replace(" where category = ? "," ");
+            sql = sql.replace("category = ?","category != ?");
         }
         List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,GOAL_COUNT);
         return results;
@@ -152,7 +152,7 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
         int start = (page-1) * GOAL_COUNT;
         String sql = "select * from goal where verification_result = 'success' and category = ? limit ?,?";
         if(category.equalsIgnoreCase("all")){
-            sql = sql.replace(" where category = ? "," ");
+            sql = sql.replace("category = ?","category != ?");
         }
         List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,GOAL_COUNT);
         return results;
@@ -163,7 +163,7 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
         int start = (page-1) * GOAL_COUNT;
         String sql = "select * from goal where verification_result = 'ongoing' and category = ? limit ?,?";
         if(category.equalsIgnoreCase("all")){
-            sql = sql.replace(" where category = ? "," ");
+            sql = sql.replace("category = ?","category != ?");
         }
         List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,GOAL_COUNT);
         return results;
@@ -174,7 +174,7 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
         int start = (page-1) * GOAL_COUNT;
         String sql = "select * from goal where verification_result = 'hold' and category = ? limit ?,?";
         if(category.equalsIgnoreCase("all")){
-            sql = sql.replace(" where category = ? "," ");
+            sql = sql.replace("category = ?","category != ?");
         }
         List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,GOAL_COUNT);
         return results;
