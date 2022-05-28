@@ -53,6 +53,7 @@ public class GoalService implements AbstractGoalService{
     public List<Goal> getGoalsByCategoryAndState(String category, String state, int page) {
         List<Goal> result = Collections.emptyList();
         List<String> categories = goalRepository.selectAllCategories();
+        categories.add("all");
         if(!categories.contains(category)){
             throw new NoMatchedCategoryException(category + "is not exist");
         }
