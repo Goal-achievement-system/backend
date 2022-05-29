@@ -81,7 +81,7 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
         Map<String,String> passwordAndSalt = passwordHashing(password);
         password = passwordAndSalt.get("password");
         String salt = passwordAndSalt.get("salt");
-        String sql = "update member set password = ? and salt = ? and nickname = ? and sex = ? and age = ? and money = ? where email = ?";
+        String sql = "update member set password = ? , salt = ? , nickname = ? , sex = ? , age = ? where email = ?";
         jdbcTemplate.update(sql,password,salt,member.getNickName(),member.getSex().name(),member.getAge(),member.getEmail());
     }
 
