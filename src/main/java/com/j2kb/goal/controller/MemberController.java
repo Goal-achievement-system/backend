@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/members")
@@ -30,7 +32,17 @@ public class MemberController {
         this.notificationService = notificationService;
         this.goalService = goalService;
     }
-
+    @GetMapping("/{email:.+}")
+    public ResponseEntity<?> canJoin(@PathVariable String email){
+        String regx  = "[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(regx);
+        Matcher matcher = pattern.matcher(email);
+        if(matcher.matches()){
+            return ResponseEntity.ok(memberService.canJoin(email));
+        }else{
+            return ResponseEntity.ok(false);
+        }
+    }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Member member){
         try {

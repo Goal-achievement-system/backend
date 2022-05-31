@@ -43,6 +43,16 @@ public class MemberService implements AbstractMemberService{
     }
 
     @Override
+    public boolean canJoin(String email) {
+        try{
+            memberRepository.selectMemberByMemberEmail(email);
+        }catch (IndexOutOfBoundsException e){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public Member getMemberByEmail(String email) {
         Member member;
         try{
