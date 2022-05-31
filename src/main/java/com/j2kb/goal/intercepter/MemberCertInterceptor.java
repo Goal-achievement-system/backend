@@ -26,12 +26,8 @@ public class MemberCertInterceptor implements HandlerInterceptor {
         if(JwtBuilder.isValid(auth)){
             return true;
         }else{
+            response.setStatus(401);
             return false;
         }
     }
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-                            @Nullable ModelAndView modelAndView) throws Exception {
-    }
-
 }
