@@ -27,6 +27,7 @@ public class MemberCertInterceptor implements HandlerInterceptor {
             return true;
         }else{
             response.setStatus(401);
+            response.getWriter().write("token is invalid");
             return false;
         }
     }
