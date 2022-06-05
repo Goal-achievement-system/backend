@@ -32,7 +32,7 @@ public class MemberController {
         this.notificationService = notificationService;
         this.goalService = goalService;
     }
-    @GetMapping("/{email:.+}")
+    @GetMapping("/check/email/{email:.+}")
     public ResponseEntity<?> canJoin(@PathVariable String email){
         String regx  = "[A-Za-z0-9+_.-]+@(.+)$";
         Pattern pattern = Pattern.compile(regx);
