@@ -32,14 +32,15 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("*");
+                .allowedOriginPatterns("*")
+                .allowedMethods("*");
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new MemberCertInterceptor())
                 .addPathPatterns("/api/**") // 해당 경로에 접근하기 전에 인터셉터가 가로챈다.
-                .excludePathPatterns("/api/members","/api/members/login","/api/admin","/api/statistics/total","/api/admin/**");// 해당 경로는 인터셉터가 가로채지 않는다.
+                .excludePathPatterns("/api/members","/api/members/login","/api/admin","/api/statistics/total","/api/admin/**","/api/members/{email:.+}");// 해당 경로는 인터셉터가 가로채지 않는다.
     }
     @Bean
     public PlatformTransactionManager transactionManager(){
