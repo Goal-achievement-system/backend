@@ -39,15 +39,16 @@ public class VerfiService implements AbstractVerfiService{
             if(isCertificationVerificationResultEqualSuccess(certification)){
                 Member member = memberRepository.selectMemberByMemberEmail(goal.getMemberEmail());
                 memberRepository.plusMoney(member,(int)(goal.getMoney()*1.5));
-                notificationRepository.insertNotification(makeNotification(goal.getMemberEmail(),"목표달성에 성공했습니다. 상금이 지급되었습니다."));
+                String url = "GET /api/members/myinfo";
+                notificationRepository.insertNotification(makeNotification(goal.getMemberEmail(),"목표달성에 성공했습니다. 상금이 지급되었습니다.",url));
             }
         }else{
             throw new PermissionException("self verification is not invalid");
         }
     }
-    private Notification makeNotification(String email,String content){
+    private Notification makeNotification(String email,String content,String url){
         Notification.NotificationBuilder builder = Notification.builder();
-        builder.memberEmail(email).content(content);
+        builder.memberEmail(email).content(content).url(url);
         return builder.build();
     }
     private boolean isVerificationResultChange(Goal before, Certification after){
@@ -72,7 +73,8 @@ public class VerfiService implements AbstractVerfiService{
                 goalRepository.updateGoalVerificationResult(goalId,certificationVerificationResult);
             }
             if(isCertificationVerificationResultEqualHold(certification)){
-                notificationRepository.insertNotification(makeNotification(goal.getMemberEmail(),"실패검증 횟수가 누적되어 인증이 보류되었습니다. 이의제기 하기 전 까지 판정이 보류됩니다."));
+                String url = "GET /api/members/myinfo";
+                notificationRepository.insertNotification(makeNotification(goal.getMemberEmail(),"실패검증 횟수가 누적되어 인증이 보류되었습니다. 이의제기 하기 전 까지 판정이 보류됩니다.",url));
             }
         }else{
             throw new PermissionException("self verification is not invalid");

@@ -11,5 +11,6 @@ public class Notification {
     private String content;
     private String memberEmail;
     private Timestamp date;
+    private String url;
     private boolean read;
 }

@@ -27,12 +27,13 @@ public class JdbcTemplateNotificationRepository implements NotificationRepositor
 
     @Override
     public Notification insertNotification(Notification notification) {
-        String sql = "insert into notification(content,member_email) values(?,?)";
+        String sql = "insert into notification(content,member_email,url) values(?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement preparedStatement = con.prepareStatement(sql, new String[]{"notification_id"});
             preparedStatement.setString(1,notification.getContent());
             preparedStatement.setString(2,notification.getMemberEmail());
+            preparedStatement.setString(3, notification.getUrl());
             return preparedStatement;
         },keyHolder);
         return selectNotificationById(keyHolder.getKey().longValue());
@@ -63,7 +64,8 @@ public class JdbcTemplateNotificationRepository implements NotificationRepositor
                     .content(rs.getString("content"))
                     .memberEmail(rs.getString("member_email"))
                     .read(rs.getBoolean("read"))
-                    .date(rs.getTimestamp("date"));
+                    .date(rs.getTimestamp("date"))
+                    .url(rs.getString("url"));
             return (T)builder.build();
         }
     }
