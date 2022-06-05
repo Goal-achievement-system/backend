@@ -5,10 +5,8 @@ import com.j2kb.goal.repository.MemberRepository;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,11 +21,17 @@ public class MemberCertInterceptor implements HandlerInterceptor {
             return true;
         }
         String auth = request.getHeader("Authorization");
-        if(JwtBuilder.isValid(auth)){
-            return true;
-        }else{
-            response.setStatus(401);
-            response.getWriter().write("token is invalid");
+        try {
+            if (JwtBuilder.isValid(auth)) {
+                return true;
+            } else {
+                response.setStatus(401);
+                response.getWriter().write("token is invalid");
+                return false;
+            }
+        }catch (NullPointerException e){
+            response.setStatus(400);
+            response.getWriter().write("token is not found");
             return false;
         }
     }
