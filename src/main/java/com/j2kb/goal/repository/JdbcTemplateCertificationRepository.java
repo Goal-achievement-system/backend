@@ -1,6 +1,7 @@
 package com.j2kb.goal.repository;
 
 import com.j2kb.goal.dto.Certification;
+import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.exception.DuplicateCertificationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -56,16 +57,20 @@ public class JdbcTemplateCertificationRepository implements CertificationReposit
     @Override
     public void increaseSuccessCount(long goalId) {
         String sql = "update certification set success_count = success_count+1," +
-                "verification_result = case when require_success_count > success_count then 'ongoing' else 'success' end " +
+                "verification_result = case when require_success_count > success_count then 'state1' else 'state2' end " +
                 "where goal_id = ?";
+        sql = sql.replace("state1", GoalState.oncertification.name());
+        sql = sql.replace("state2", GoalState.success.name());
         jdbcTemplate.update(sql,goalId);
     }
 
     @Override
     public void increaseFailCount(long goalId) {
         String sql = "update certification set fail_count = fail_count+1," +
-                "verification_result = case when require_success_count * 0.9 > fail_count then 'ongoing' else 'hold' end " +
+                "verification_result = case when require_success_count * 0.9 > fail_count then 'state1' else 'state2' end " +
                 "where goal_id = ?";
+        sql = sql.replace("state1", GoalState.oncertification.name());
+        sql = sql.replace("state2", GoalState.hold.name());
         jdbcTemplate.update(sql,goalId);
     }
 
