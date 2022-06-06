@@ -2,6 +2,7 @@ package com.j2kb.goal.controller;
 
 import com.j2kb.goal.dto.Certification;
 import com.j2kb.goal.dto.Goal;
+import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.exception.DuplicateCertificationException;
 import com.j2kb.goal.exception.MoneyOverflowException;
 import com.j2kb.goal.exception.NoMatchedCategoryException;
@@ -72,9 +73,20 @@ public class GoalController {
     }
 
     @GetMapping("/{category}/list/{state}/{page:[0-9]+}")
-    public ResponseEntity<List<Goal>> getGoalsByCategoryAndState(@PathVariable String category, @PathVariable String state, @PathVariable int page){
+    public ResponseEntity<List<Goal>> getGoalsByCategoryAndState(@PathVariable String category, @PathVariable GoalState state, @PathVariable int page){
         try {
             List<Goal> result = goalService.getGoalsByCategoryAndState(category, state, page);
+            return ResponseEntity.ok(result);
+        }catch (NoMatchedCategoryException | IllegalArgumentException e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @GetMapping("/{category}/list/{page:[0-9]+}")
+    public ResponseEntity<List<Goal>> getOnCertificationGoalsByCategory(@PathVariable String category, @PathVariable int page){
+        try {
+            List<Goal> result = goalService.getOnCertificationGoalsByCategory(category,page);
             return ResponseEntity.ok(result);
         }catch (NoMatchedCategoryException | IllegalArgumentException e){
             e.printStackTrace();

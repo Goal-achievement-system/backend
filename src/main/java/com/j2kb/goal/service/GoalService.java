@@ -1,6 +1,7 @@
 package com.j2kb.goal.service;
 
 import com.j2kb.goal.dto.Goal;
+import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.dto.Member;
 import com.j2kb.goal.exception.MoneyOverflowException;
 import com.j2kb.goal.exception.NoMatchedCategoryException;
@@ -50,63 +51,32 @@ public class GoalService implements AbstractGoalService{
     }
 
     @Override
-    public List<Goal> getGoalsByCategoryAndState(String category, String state, int page) {
+    public List<Goal> getGoalsByCategoryAndState(String category, GoalState state, int page) {
         List<Goal> result = Collections.emptyList();
         List<String> categories = goalRepository.selectAllCategories();
         categories.add("all");
         if(!categories.contains(category)){
             throw new NoMatchedCategoryException(category + "is not exist");
         }
-        switch (state){
-            case "all":
-                result = goalRepository.selectAllGoalsByCategory(category,page);
-                break;
-            case "success":
-                result = goalRepository.selectSuccessGoalsByCategory(category,page);
-                break;
-            case "fail" :
-                result = goalRepository.selectFailGoalsByCategory(category,page);
-                break;
-            case "ongoing":
-                result = goalRepository.selectOnGoingGoalsByCategory(category,page);
-                break;
-            case  "hold":
-                result = goalRepository.selectHoldGoalsByCategory(category,page);
-                break;
-            default:
-                throw new IllegalArgumentException("illegal State");
-        }
+        result = goalRepository.selectGoalsByCategoryAndState(category,state,page);
         return result;
     }
 
     @Override
-    public List<Goal> getGoalsByEmailAndState(String email, String state,int page) {
+    public List<Goal> getGoalsByEmailAndState(String email, GoalState state,int page) {
         List<Goal> result = Collections.emptyList();
         try{
             Member member = memberRepository.selectMemberByMemberEmail(email);
         }catch (DataAccessException e){
             throw new NoMatchedMemberException("member with "+email +" is not exist",e);
         }
+        result = goalRepository.selectGoalsByEmailAndState(email,state,page);
+        return result;
+    }
 
-        switch (state){
-            case "all":
-                result = goalRepository.selectAllGoalsByEmail(email,page);
-                break;
-            case "success":
-                result = goalRepository.selectSuccessGoalsByEmail(email,page);
-                break;
-            case "fail" :
-                result = goalRepository.selectFailGoalsByEmail(email,page);
-                break;
-            case "ongoing":
-                result = goalRepository.selectOnGoingGoalsByEmail(email,page);
-                break;
-            case  "hold":
-                result = goalRepository.selectHoldGoalsByEmail(email,page);
-                break;
-            default:
-                throw new IllegalArgumentException("illegal State");
-        }
+    @Override
+    public List<Goal> getOnCertificationGoalsByCategory(String category, int page) {
+        List<Goal> result = goalRepository.selectGoalsByCategoryAndState(category, GoalState.oncertification,page);
         return result;
     }
 

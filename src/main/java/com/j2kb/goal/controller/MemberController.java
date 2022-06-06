@@ -1,6 +1,7 @@
 package com.j2kb.goal.controller;
 
 import com.j2kb.goal.dto.Goal;
+import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.dto.Member;
 import com.j2kb.goal.dto.Notification;
 import com.j2kb.goal.exception.DuplicateMemberException;
@@ -76,7 +77,7 @@ public class MemberController {
         }
     }
     @GetMapping("/myinfo/goals/{state}/{page:[0-9]+}")
-    public ResponseEntity<?> getMyGoals(@RequestHeader("Authorization") String token, @PathVariable String state,@PathVariable int page){
+    public ResponseEntity<?> getMyGoals(@RequestHeader("Authorization") String token, @PathVariable GoalState state, @PathVariable int page){
         try {
             String email = JwtBuilder.getEmailFromJwt(token);
             return ResponseEntity.ok(goalService.getGoalsByEmailAndState(email, state, page));
