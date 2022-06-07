@@ -5,6 +5,7 @@ import com.j2kb.goal.exception.NoMatchedCertificationException;
 import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.repository.*;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,7 @@ public class VerfiService implements AbstractVerfiService{
                 notificationRepository.insertNotification(makeNotification(goal.getMemberEmail(),"목표달성에 성공했습니다. 상금이 지급되었습니다.",url));
             }
         }else{
-            throw new PermissionException("self verification is not invalid");
+            throw new PermissionException(HttpStatus.UNAUTHORIZED, ErrorCode.PERMISSION_DENIED, "/api/goals/cert/success/"+goalId, "self verification is not invalid");
         }
     }
     private Notification makeNotification(String email,String content,String url){
@@ -77,7 +78,7 @@ public class VerfiService implements AbstractVerfiService{
                 notificationRepository.insertNotification(makeNotification(goal.getMemberEmail(),"실패검증 횟수가 누적되어 인증이 보류되었습니다. 이의제기 하기 전 까지 판정이 보류됩니다.",url));
             }
         }else{
-            throw new PermissionException("self verification is not invalid");
+            throw new PermissionException(HttpStatus.UNAUTHORIZED, ErrorCode.PERMISSION_DENIED, "/api/goals/cert/fail/"+goalId, "self verification is not invalid");
         }
     }
     private boolean isCertificationVerificationResultEqualHold(Certification certification){

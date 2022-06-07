@@ -1,10 +1,12 @@
 package com.j2kb.goal.repository;
 
 import com.j2kb.goal.dto.Certification;
+import com.j2kb.goal.dto.ErrorCode;
 import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.exception.DuplicateCertificationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -30,7 +32,7 @@ public class JdbcTemplateCertificationRepository implements CertificationReposit
         try{
             jdbcTemplate.update(sql,certification.getGoalId(),certification.getContent(),certification.getImage(),certification.getRequireSuccessCount());
         }catch (DataAccessException e){
-            throw new DuplicateCertificationException("",e);
+            throw new DuplicateCertificationException(HttpStatus.CONFLICT, ErrorCode.CERTIFICATION_ALREADY_EXISTS, "POST /apis/goals/cert/"+certification.getGoalId(), "The Certification already exists.");
         }
     }
 

@@ -39,9 +39,6 @@ public class GoalController {
         String email = JwtBuilder.getEmailFromJwt(token);
         try {
             return ResponseEntity.ok(goalService.addGoal(goal, email));
-        }catch (PermissionException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }catch (NoMatchedCategoryException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -111,12 +108,6 @@ public class GoalController {
         try {
             certService.addCert(certification, goalOwnerEmail);
             return ResponseEntity.ok(certService.getCertificationByGoalId(goalId).orElseThrow());
-        }catch (PermissionException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }catch (DuplicateCertificationException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }catch (DataAccessException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -131,8 +122,6 @@ public class GoalController {
             return ResponseEntity.ok().build();
         }catch (DataAccessException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }catch (PermissionException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 
@@ -144,8 +133,6 @@ public class GoalController {
             return ResponseEntity.ok().build();
         }catch (DataAccessException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }catch (PermissionException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 }

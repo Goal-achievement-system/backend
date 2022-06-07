@@ -1,7 +1,9 @@
 package com.j2kb.goal.exception;
 
-public class PermissionException extends RuntimeException{
-    public PermissionException(String msg){
-        super(msg);
+import org.springframework.http.HttpStatus;
+
+public class PermissionException extends SpringHandledException{
+    public PermissionException(HttpStatus httpStatus, int errorCode, String url, String msg) {
+        super(httpStatus, errorCode, url, msg);
     }
 }

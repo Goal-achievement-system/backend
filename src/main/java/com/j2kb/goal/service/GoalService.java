@@ -1,5 +1,6 @@
 package com.j2kb.goal.service;
 
+import com.j2kb.goal.dto.ErrorCode;
 import com.j2kb.goal.dto.Goal;
 import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.dto.Member;
@@ -11,6 +12,7 @@ import com.j2kb.goal.repository.GoalRepository;
 import com.j2kb.goal.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +37,7 @@ public class GoalService implements AbstractGoalService{
     @Override
     public Goal addGoal(Goal goal, String email) {
         if(!email.contentEquals(goal.getMemberEmail())){
-            throw new PermissionException("adding other member's goal is impossible");
+            throw new PermissionException(HttpStatus.UNAUTHORIZED, ErrorCode.PERMISSION_DENIED, "POST /api/goals", "adding other member's goal is impossible");
         }
         List<String> categories = goalRepository.selectAllCategories();
         if(!categories.contains(goal.getCategory())){

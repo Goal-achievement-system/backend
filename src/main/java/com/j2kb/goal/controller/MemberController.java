@@ -1,12 +1,9 @@
 package com.j2kb.goal.controller;
 
-import com.j2kb.goal.dto.Goal;
 import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.dto.Member;
-import com.j2kb.goal.dto.Notification;
 import com.j2kb.goal.exception.DuplicateMemberException;
 import com.j2kb.goal.exception.NoMatchedMemberException;
-import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.service.*;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -108,8 +104,6 @@ public class MemberController {
         }catch (NoMatchedMemberException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }catch (PermissionException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
     @PutMapping("/myinfo/charge")
