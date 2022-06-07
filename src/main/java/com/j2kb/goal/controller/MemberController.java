@@ -55,12 +55,8 @@ public class MemberController {
     }
     @PostMapping("")
     public ResponseEntity<?> join(@RequestBody Member member){
-        try {
-            memberService.join(member);
-            return ResponseEntity.ok().build();
-        }catch (DuplicateMemberException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        memberService.join(member);
+        return ResponseEntity.ok().build();
     }
     @GetMapping("/myinfo")
     public ResponseEntity<?> getMyInfo( @RequestHeader("Authorization") String token){

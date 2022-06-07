@@ -40,7 +40,7 @@ public class MemberService implements AbstractMemberService{
         try{
             memberRepository.insertMember(member);
         }catch (DataAccessException e){
-            throw new DuplicateMemberException("Member with email = "+member.getEmail() + "is exist",e);
+            throw new DuplicateMemberException(HttpStatus.CONFLICT, ErrorCode.DUPLICATED_EMAIL, "POST /api/members", "Member with email = "+member.getEmail() + "is exist");
         }
     }
 
@@ -82,7 +82,7 @@ public class MemberService implements AbstractMemberService{
         try {
             memberRepository.deleteMember(member);
         }catch (DataAccessException e){
-            throw new DuplicateMemberException("Member with email = "+member.getEmail() + "is not exist",e);
+            throw new DuplicateMemberException(HttpStatus.CONFLICT, ErrorCode.DUPLICATED_EMAIL, "POST /api/members", "Member with email = "+member.getEmail() + "is not exist");
         }
     }
 

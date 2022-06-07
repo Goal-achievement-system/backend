@@ -1,12 +1,10 @@
 package com.j2kb.goal.exception;
 
-public class DuplicateMemberException extends RuntimeException{
-    public DuplicateMemberException(String msg){
-        super(msg);
-    }
+import org.springframework.http.HttpStatus;
 
-    public DuplicateMemberException(String msg,Throwable throwable){
-        super(msg);
-        this.initCause(throwable);
+public class DuplicateMemberException extends SpringHandledException{
+
+    public DuplicateMemberException(HttpStatus httpStatus, int errorCode, String url, String msg) {
+        super(httpStatus, errorCode, url, msg);
     }
 }
