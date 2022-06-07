@@ -1,7 +1,9 @@
 package com.j2kb.goal.exception;
 
-public class MoneyOverflowException extends RuntimeException{
-    public MoneyOverflowException(String msg){
-        super(msg);
+import org.springframework.http.HttpStatus;
+
+public class MoneyOverflowException extends SpringHandledException{
+    public MoneyOverflowException(HttpStatus httpStatus, int errorCode, String url, String msg) {
+        super(httpStatus, errorCode, url, msg);
     }
 }

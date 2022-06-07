@@ -42,9 +42,6 @@ public class GoalController {
         }catch (NoMatchedCategoryException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }catch (MoneyOverflowException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 

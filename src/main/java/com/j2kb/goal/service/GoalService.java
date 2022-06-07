@@ -48,7 +48,7 @@ public class GoalService implements AbstractGoalService{
             memberRepository.minusMoney(member,goal.getMoney());
             return goalRepository.insertGoal(goal);
         }else{
-            throw new MoneyOverflowException("money overflow");
+            throw new MoneyOverflowException(HttpStatus.FORBIDDEN, ErrorCode.LACK_OF_MONEY, "POST /api/goals", "lack of money");
         }
     }
 
