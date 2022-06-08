@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface AbstractCertService {
     void addCert(Certification certification, String goalOwnerEmail);
-    Optional<Certification> getCertificationByGoalId(long goalId);
+    Certification getCertificationByGoalId(long goalId);
 }

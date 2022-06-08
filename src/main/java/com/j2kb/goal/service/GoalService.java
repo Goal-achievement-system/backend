@@ -4,10 +4,7 @@ import com.j2kb.goal.dto.ErrorCode;
 import com.j2kb.goal.dto.Goal;
 import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.dto.Member;
-import com.j2kb.goal.exception.MoneyOverflowException;
-import com.j2kb.goal.exception.NoMatchedCategoryException;
-import com.j2kb.goal.exception.NoMatchedMemberException;
-import com.j2kb.goal.exception.PermissionException;
+import com.j2kb.goal.exception.*;
 import com.j2kb.goal.repository.GoalRepository;
 import com.j2kb.goal.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -30,8 +28,12 @@ public class GoalService implements AbstractGoalService{
         this.memberRepository = memberRepository;
     }
     @Override
-    public Optional<Goal> getGoalByGoalId(long goalId) {
-        return goalRepository.selectGoalByGoalId(goalId);
+    public Goal getGoalByGoalId(long goalId) {
+        try {
+            return goalRepository.selectGoalByGoalId(goalId).orElseThrow();
+        }catch (DataAccessException | NoSuchElementException e){
+            throw new NoMatchedGoalException(HttpStatus.NOT_FOUND,ErrorCode.NOT_FOUND,"GET /api/goals/"+goalId,"goal with goalId = "+goalId+" is not found");
+        }
     }
     @Transactional
     @Override
@@ -78,8 +80,11 @@ public class GoalService implements AbstractGoalService{
 
     @Override
     public List<Goal> getOnCertificationGoalsByCategory(String category, int page) {
-        List<Goal> result = goalRepository.selectGoalsByCategoryAndState(category, GoalState.oncertification,page);
-        return result;
+        try {
+            return goalRepository.selectGoalsByCategoryAndState(category, GoalState.oncertification,page);
+        }catch (DataAccessException e){
+            throw new NoMatchedCategoryException(HttpStatus.NOT_FOUND,ErrorCode.INVALID_CATEGORY,"GET /api/goals/"+category+"/list/"+page,category + " category is not exist");
+        }
     }
 
     @Override

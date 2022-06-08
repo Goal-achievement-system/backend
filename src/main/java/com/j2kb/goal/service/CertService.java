@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 @Service
 public class CertService implements AbstractCertService{
@@ -40,10 +41,10 @@ public class CertService implements AbstractCertService{
     }
 
     @Override
-    public Optional<Certification> getCertificationByGoalId(long goalId) {
+    public Certification getCertificationByGoalId(long goalId) {
         try {
-            return certificationRepository.selectCertificationByGoalId(goalId);
-        }catch (DataAccessException e){
+            return certificationRepository.selectCertificationByGoalId(goalId).orElseThrow();
+        }catch (DataAccessException | NoSuchElementException e){
             throw new NoMatchedCertificationException(HttpStatus.NOT_FOUND,ErrorCode.NOT_FOUND,"GET /api/goals/cert/"+goalId,"No matched Certification");
         }
     }

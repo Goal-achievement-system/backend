@@ -1,13 +1,11 @@
 package com.j2kb.goal.service;
 
-import com.j2kb.goal.dto.Admin;
-import com.j2kb.goal.dto.Announcement;
-import com.j2kb.goal.dto.Goal;
-import com.j2kb.goal.dto.GoalAndCert;
+import com.j2kb.goal.dto.*;
 import com.j2kb.goal.exception.NoMatchedGoalException;
 import com.j2kb.goal.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,7 +36,7 @@ public class AdminService implements AbstractAdminService{
             Goal goal = Goal.builder().goalId(goalId).verificationResult("success").build();
             adminRepository.updateGoalVerificationResult(goal);
         }catch (DataAccessException e){
-            throw new NoMatchedGoalException("no matched goal with goalId = "+goalId);
+            throw new NoMatchedGoalException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND,"/api/admin/goals/cert/success/"+goalId,"no matched goal with goalId = "+goalId);
         }
     }
 
@@ -48,7 +46,7 @@ public class AdminService implements AbstractAdminService{
             Goal goal = Goal.builder().goalId(goalId).verificationResult("fail").build();
             adminRepository.updateGoalVerificationResult(goal);
         }catch (DataAccessException e){
-            throw new NoMatchedGoalException("no matched goal with goalId = "+goalId);
+            throw new NoMatchedGoalException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND,"/api/admin/goals/cert/fail/"+goalId,"no matched goal with goalId = "+goalId);
         }
     }
 

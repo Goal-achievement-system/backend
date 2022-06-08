@@ -37,12 +37,7 @@ public class GoalController {
     @PostMapping("")
     public ResponseEntity<Goal> addNewGoal(@RequestBody Goal goal,@RequestHeader("Authorization") String token){
         String email = JwtBuilder.getEmailFromJwt(token);
-        try {
-            return ResponseEntity.ok(goalService.addGoal(goal, email));
-        }catch (NoMatchedCategoryException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        return ResponseEntity.ok(goalService.addGoal(goal, email));
     }
 
     @GetMapping("/categories")
@@ -57,13 +52,9 @@ public class GoalController {
 
     @GetMapping("/{goalId:[0-9]+}")
     public ResponseEntity<Goal> getGoalByGoalId(@PathVariable long goalId){
-        try {
-            Goal goal = goalService.getGoalByGoalId(goalId).orElseThrow();
-            return ResponseEntity.ok(goal);
-        }catch (NoSuchElementException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        Goal goal = goalService.getGoalByGoalId(goalId);
+        return ResponseEntity.ok(goal);
+
     }
 
     @GetMapping("/{category}/list/{state}/{page:[0-9]+}")
@@ -74,18 +65,13 @@ public class GoalController {
 
     @GetMapping("/{category}/list/{page:[0-9]+}")
     public ResponseEntity<List<Goal>> getOnCertificationGoalsByCategory(@PathVariable String category, @PathVariable int page){
-        try {
-            List<Goal> result = goalService.getOnCertificationGoalsByCategory(category,page);
-            return ResponseEntity.ok(result);
-        }catch (NoMatchedCategoryException | IllegalArgumentException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        List<Goal> result = goalService.getOnCertificationGoalsByCategory(category,page);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/cert/{goalId:[0-9]+}")
     public ResponseEntity<Certification> getCertificationByGoalId(@PathVariable long goalId){
-        Certification result = certService.getCertificationByGoalId(goalId).orElseThrow();
+        Certification result = certService.getCertificationByGoalId(goalId);
         return ResponseEntity.ok(result);
     }
 
@@ -94,7 +80,7 @@ public class GoalController {
         String goalOwnerEmail = JwtBuilder.getEmailFromJwt(token);
         try {
             certService.addCert(certification, goalOwnerEmail);
-            return ResponseEntity.ok(certService.getCertificationByGoalId(goalId).orElseThrow());
+            return ResponseEntity.ok(certService.getCertificationByGoalId(goalId));
         }catch (DataAccessException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.CREATED).build();
