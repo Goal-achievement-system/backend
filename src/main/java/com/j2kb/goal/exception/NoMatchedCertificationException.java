@@ -1,12 +1,10 @@
 package com.j2kb.goal.exception;
 
-public class NoMatchedCertificationException extends RuntimeException{
-    public NoMatchedCertificationException(String msg){
-        super(msg);
-    }
+import org.springframework.http.HttpStatus;
 
-    public NoMatchedCertificationException(String msg, Throwable throwable){
-        super(msg);
-        this.initCause(throwable);
+public class NoMatchedCertificationException extends SpringHandledException{
+
+    public NoMatchedCertificationException(HttpStatus httpStatus, int errorCode, String url, String msg) {
+        super(httpStatus, errorCode, url, msg);
     }
 }

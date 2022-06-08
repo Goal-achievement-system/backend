@@ -5,11 +5,13 @@ import com.j2kb.goal.dto.ErrorCode;
 import com.j2kb.goal.dto.Goal;
 import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.exception.DuplicateCertificationException;
+import com.j2kb.goal.exception.NoMatchedCertificationException;
 import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.repository.CertificationRepository;
 import com.j2kb.goal.repository.GoalRepository;
 import com.j2kb.goal.repository.GoalRowMapperIncludeEmail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,10 @@ public class CertService implements AbstractCertService{
 
     @Override
     public Optional<Certification> getCertificationByGoalId(long goalId) {
-        return certificationRepository.selectCertificationByGoalId(goalId);
+        try {
+            return certificationRepository.selectCertificationByGoalId(goalId);
+        }catch (DataAccessException e){
+            throw new NoMatchedCertificationException(HttpStatus.NOT_FOUND,ErrorCode.NOT_FOUND,"GET /api/goals/cert/"+goalId,"No matched Certification");
+        }
     }
 }

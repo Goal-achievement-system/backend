@@ -8,4 +8,5 @@ public class ErrorCode {
     public static final int PERMISSION_DENIED = 5;
     public static final int LACK_OF_MONEY = 6;
     public static final int INVALID_CATEGORY = 7;
+    public static final int NOT_FOUND = 8;
 }

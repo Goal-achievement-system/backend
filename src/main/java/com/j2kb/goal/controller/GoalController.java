@@ -85,13 +85,8 @@ public class GoalController {
 
     @GetMapping("/cert/{goalId:[0-9]+}")
     public ResponseEntity<Certification> getCertificationByGoalId(@PathVariable long goalId){
-        try {
-            Certification result = certService.getCertificationByGoalId(goalId).orElseThrow();
-            return ResponseEntity.ok(result);
-        }catch (NoSuchElementException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        Certification result = certService.getCertificationByGoalId(goalId).orElseThrow();
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/cert/{goalId:[0-9]+}")
