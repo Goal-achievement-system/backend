@@ -72,7 +72,7 @@ public class GoalService implements AbstractGoalService{
         try{
             Member member = memberRepository.selectMemberByMemberEmail(email);
         }catch (DataAccessException e){
-            throw new NoMatchedMemberException("member with "+email +" is not exist",e);
+            throw new NoMatchedMemberException(HttpStatus.UNAUTHORIZED,ErrorCode.INVALID_TOKEN,"GET /api/members/myinfo/goals/"+state.name()+"/"+page,"member with "+email +" is not exist");
         }
         result = goalRepository.selectGoalsByEmailAndState(email,state,page);
         return result;

@@ -60,7 +60,7 @@ public class MemberService implements AbstractMemberService{
         try{
             return memberRepository.selectMemberByMemberEmail(email);
         }catch (DataAccessException | NullPointerException e){
-            throw new NoMatchedMemberException("Member with email = "+email+ "is not exist",e);
+            throw new NoMatchedMemberException(HttpStatus.UNAUTHORIZED,ErrorCode.INVALID_TOKEN,"GET /api/members/myinfo","Member with email = "+email+ "is not exist");
         }
     }
 
@@ -70,7 +70,7 @@ public class MemberService implements AbstractMemberService{
             try {
                 memberRepository.updateMember(member);
             } catch (DataAccessException e) {
-                throw new NoMatchedMemberException("Member with email = " + member.getEmail() + "is not exist", e);
+                throw new NoMatchedMemberException(HttpStatus.INTERNAL_SERVER_ERROR,ErrorCode.UNKNOWN,"PUT /api/members/myinfo","Member with email = "+memberEmail+ "is not exist");
             }
         }else{
             throw new PermissionException(HttpStatus.UNAUTHORIZED, ErrorCode.PERMISSION_DENIED, "PUT /api/members/myinfo", "can not access other Member");
@@ -91,7 +91,7 @@ public class MemberService implements AbstractMemberService{
         if(memberRepository.login(member)){
             memberRepository.plusMoney(member,member.getMoney());
         }else{
-            throw new NoMatchedMemberException("email or password is wrong");
+            throw new NoMatchedMemberException(HttpStatus.UNAUTHORIZED,ErrorCode.PERMISSION_DENIED,"PUT /api/members/myinfo/charge","email or password is wrong");
         }
     }
 
@@ -100,7 +100,7 @@ public class MemberService implements AbstractMemberService{
         if(memberRepository.login(member)){
             memberRepository.minusMoney(member,member.getMoney());
         }else{
-            throw new NoMatchedMemberException("email or password is wrong");
+            throw new NoMatchedMemberException(HttpStatus.UNAUTHORIZED,ErrorCode.PERMISSION_DENIED,"PUT /api/members/myinfo/refund","email or password is wrong");
         }
     }
 }

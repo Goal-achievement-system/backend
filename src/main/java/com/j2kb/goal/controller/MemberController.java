@@ -60,26 +60,13 @@ public class MemberController {
     }
     @GetMapping("/myinfo")
     public ResponseEntity<?> getMyInfo( @RequestHeader("Authorization") String token){
-        try {
-            String email = JwtBuilder.getEmailFromJwt(token);
-            return ResponseEntity.ok(memberService.getMemberByEmail(email));
-        }catch (NoMatchedMemberException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        String email = JwtBuilder.getEmailFromJwt(token);
+        return ResponseEntity.ok(memberService.getMemberByEmail(email));
     }
     @GetMapping("/myinfo/goals/{state}/{page:[0-9]+}")
     public ResponseEntity<?> getMyGoals(@RequestHeader("Authorization") String token, @PathVariable GoalState state, @PathVariable int page){
-        try {
-            String email = JwtBuilder.getEmailFromJwt(token);
-            return ResponseEntity.ok(goalService.getGoalsByEmailAndState(email, state, page));
-        }catch (NoMatchedMemberException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }catch (IllegalStateException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        String email = JwtBuilder.getEmailFromJwt(token);
+        return ResponseEntity.ok(goalService.getGoalsByEmailAndState(email, state, page));
     }
     @GetMapping("/myinfo/notifications")
     public ResponseEntity<?> getMyNotifications(@RequestHeader("Authorization") String token){
@@ -93,31 +80,18 @@ public class MemberController {
     }
     @PutMapping("/myinfo")
     public ResponseEntity<?> updateMyInfo(@RequestBody Member member, @RequestHeader("Authorization") String token){
-        try {
-            String email = JwtBuilder.getEmailFromJwt(token);
-            memberService.updateMember(member, email);
-            return ResponseEntity.ok(memberService.getMemberByEmail(email));
-        }catch (NoMatchedMemberException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        String email = JwtBuilder.getEmailFromJwt(token);
+        memberService.updateMember(member, email);
+        return ResponseEntity.ok(memberService.getMemberByEmail(email));
     }
     @PutMapping("/myinfo/charge")
     public ResponseEntity<?> chargeMoney(@RequestHeader("Authorization") String token, @RequestBody Member member){
-        try{
-            memberService.chargeMoney(member);
-            return ResponseEntity.ok().build();
-        }catch (NoMatchedMemberException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
+        memberService.chargeMoney(member);
+        return ResponseEntity.ok().build();
     }
     @PutMapping("/myinfo/refund")
     public ResponseEntity<?> refundMoney(@RequestHeader("Authorization") String token, @RequestBody Member member){
-        try{
-            memberService.refundMoney(member);
-            return ResponseEntity.ok().build();
-        }catch (NoMatchedMemberException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
+        memberService.refundMoney(member);
+        return ResponseEntity.ok().build();
     }
 }
