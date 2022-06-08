@@ -1,10 +1,8 @@
 package com.j2kb.goal.service;
 
 import com.j2kb.goal.dto.*;
-import com.j2kb.goal.exception.NoMatchedCertificationException;
 import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.repository.*;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
