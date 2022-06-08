@@ -19,8 +19,7 @@ import java.util.Optional;
 @Repository
 public class JdbcTemplateGoalRepository implements GoalRepository{
     private JdbcTemplate jdbcTemplate;
-    private static final int MYINFO_GOAL_COUNT=6;
-    private static final int GOAL_COUNT=9;
+
     @Autowired
     public JdbcTemplateGoalRepository(DataSource dataSource){
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -98,6 +97,23 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
     }
 
     @Override
+    public long selectCountOfGoalsByEmailAndState(String email, GoalState state) {
+        String stateString = state.name();
+        String sql = "select count(*) from goal where verification_result = 'state' and member_email = ?";
+        if(stateString.equalsIgnoreCase("ALL")){
+            sql = "select count(*) from goal where member_email = ?";
+        }else{
+            sql = sql.replace("state",stateString);
+        }
+        return jdbcTemplate.queryForObject(sql, new RowMapper<Long>() {
+            @Override
+            public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getLong(1);
+            }
+        },email);
+    }
+
+    @Override
     public List<Goal> selectGoalsByCategoryAndState(String category, GoalState state, int page) {
         int start = (page-1) * MYINFO_GOAL_COUNT;
         String stateString = state.name();
@@ -110,8 +126,28 @@ public class JdbcTemplateGoalRepository implements GoalRepository{
         if(category.equalsIgnoreCase("all")){
             sql = sql.replace("category = ?","category != ?");
         }
-        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,MYINFO_GOAL_COUNT);
+        List<Goal> results = jdbcTemplate.query(sql,new GoalRowMapper<Goal>(),category,start,GOAL_COUNT);
         return results;
+    }
+
+    @Override
+    public long selectCountOfGoalsByCategoryAndState(String category, GoalState state) {
+        String stateString = state.name();
+        String sql = "select count(*) from goal where verification_result = 'state' and category = ?";
+        if(stateString.equalsIgnoreCase("ALL")){
+            sql = "select count(*) from goal where category = ?";
+        }else{
+            sql = sql.replace("state",stateString);
+        }
+        if(category.equalsIgnoreCase("all")){
+            sql = sql.replace("category = ?","category != ?");
+        }
+        return jdbcTemplate.queryForObject(sql, new RowMapper<Long>() {
+            @Override
+            public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getLong(1);
+            }
+        },category);
     }
 
     @Override

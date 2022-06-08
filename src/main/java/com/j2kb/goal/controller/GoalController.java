@@ -3,6 +3,7 @@ package com.j2kb.goal.controller;
 import com.j2kb.goal.dto.Certification;
 import com.j2kb.goal.dto.Goal;
 import com.j2kb.goal.dto.GoalState;
+import com.j2kb.goal.dto.GoalsWithPagination;
 import com.j2kb.goal.service.*;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,14 +53,14 @@ public class GoalController {
     }
 
     @GetMapping("/{category}/list/{state}/{page:[0-9]+}")
-    public ResponseEntity<List<Goal>> getGoalsByCategoryAndState(@PathVariable String category, @PathVariable GoalState state, @PathVariable int page){
-        List<Goal> result = goalService.getGoalsByCategoryAndState(category, state, page);
+    public ResponseEntity<GoalsWithPagination> getGoalsByCategoryAndState(@PathVariable String category, @PathVariable GoalState state, @PathVariable int page){
+        GoalsWithPagination result = goalService.getGoalsByCategoryAndState(category, state, page);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{category}/list/{page:[0-9]+}")
-    public ResponseEntity<List<Goal>> getOnCertificationGoalsByCategory(@PathVariable String category, @PathVariable int page){
-        List<Goal> result = goalService.getOnCertificationGoalsByCategory(category,page);
+    public ResponseEntity<GoalsWithPagination> getOnCertificationGoalsByCategory(@PathVariable String category, @PathVariable int page){
+        GoalsWithPagination result = goalService.getOnCertificationGoalsByCategory(category,page);
         return ResponseEntity.ok(result);
     }
 

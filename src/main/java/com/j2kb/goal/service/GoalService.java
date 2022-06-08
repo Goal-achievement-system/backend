@@ -1,9 +1,6 @@
 package com.j2kb.goal.service;
 
-import com.j2kb.goal.dto.ErrorCode;
-import com.j2kb.goal.dto.Goal;
-import com.j2kb.goal.dto.GoalState;
-import com.j2kb.goal.dto.Member;
+import com.j2kb.goal.dto.*;
 import com.j2kb.goal.exception.*;
 import com.j2kb.goal.repository.GoalRepository;
 import com.j2kb.goal.repository.MemberRepository;
@@ -55,36 +52,51 @@ public class GoalService implements AbstractGoalService{
     }
 
     @Override
-    public List<Goal> getGoalsByCategoryAndState(String category, GoalState state, int page) {
-        List<Goal> result = Collections.emptyList();
+    public GoalsWithPagination getGoalsByCategoryAndState(String category, GoalState state, int page) {
+        List<Goal> goals = Collections.emptyList();
         List<String> categories = goalRepository.selectAllCategories();
         categories.add("all");
         if(!categories.contains(category)){
             throw new NoMatchedCategoryException(HttpStatus.NOT_FOUND, ErrorCode.INVALID_CATEGORY, "GET /api/goals/list/"+state.name()+"/"+page, category + " category is not exist");
         }
-        result = goalRepository.selectGoalsByCategoryAndState(category,state,page);
+        goals = goalRepository.selectGoalsByCategoryAndState(category,state,page);
+        long countOfGoals = goalRepository.selectCountOfGoalsByCategoryAndState(category,state);
+        long maxPage = countOfGoals / GoalRepository.GOAL_COUNT;
+        if(countOfGoals%GoalRepository.GOAL_COUNT!=0){
+            maxPage += 1;
+        }
+        GoalsWithPagination result = new GoalsWithPagination(maxPage,goals);
         return result;
     }
 
     @Override
-    public List<Goal> getGoalsByEmailAndState(String email, GoalState state,int page) {
-        List<Goal> result = Collections.emptyList();
+    public GoalsWithPagination getGoalsByEmailAndState(String email, GoalState state, int page) {
+        List<Goal> goals = Collections.emptyList();
         try{
             Member member = memberRepository.selectMemberByMemberEmail(email);
         }catch (DataAccessException e){
             throw new NoMatchedMemberException(HttpStatus.UNAUTHORIZED,ErrorCode.INVALID_TOKEN,"GET /api/members/myinfo/goals/"+state.name()+"/"+page,"member with "+email +" is not exist");
         }
-        result = goalRepository.selectGoalsByEmailAndState(email,state,page);
+        goals = goalRepository.selectGoalsByEmailAndState(email,state,page);
+        long countOfGoals = goalRepository.selectCountOfGoalsByEmailAndState(email,state);
+        long maxPage = countOfGoals / GoalRepository.MYINFO_GOAL_COUNT;
+        if(countOfGoals%GoalRepository.MYINFO_GOAL_COUNT!=0){
+            maxPage += 1;
+        }
+        GoalsWithPagination result = new GoalsWithPagination(maxPage,goals);
         return result;
     }
 
     @Override
-    public List<Goal> getOnCertificationGoalsByCategory(String category, int page) {
+    public GoalsWithPagination getOnCertificationGoalsByCategory(String category, int page) {
+        List<Goal> goals = Collections.emptyList();
         try {
-            return goalRepository.selectGoalsByCategoryAndState(category, GoalState.oncertification,page);
+            goals =  goalRepository.selectGoalsByCategoryAndState(category, GoalState.oncertification,page);
         }catch (DataAccessException e){
             throw new NoMatchedCategoryException(HttpStatus.NOT_FOUND,ErrorCode.INVALID_CATEGORY,"GET /api/goals/"+category+"/list/"+page,category + " category is not exist");
         }
+        GoalsWithPagination result = new GoalsWithPagination(1,goals);
+        return result;
     }
 
     @Override

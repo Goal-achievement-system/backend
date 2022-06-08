@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GoalRepository {
+    public static final int MYINFO_GOAL_COUNT=6;
+    public static final int GOAL_COUNT=9;
 
     List<String> selectAllCategories();
 
@@ -18,7 +20,9 @@ public interface GoalRepository {
     void updateGoalVerificationResult(long goalId, String result);
 
     List<Goal> selectGoalsByEmailAndState(String email, GoalState state, int page);
+    long selectCountOfGoalsByEmailAndState(String email, GoalState state);
     List<Goal> selectGoalsByCategoryAndState(String category, GoalState state, int page);
+    long selectCountOfGoalsByCategoryAndState(String category, GoalState state);
 
     long selectAllGoalsCount();
     long selectAllSuccessGoalsCount();
