@@ -2,12 +2,9 @@ package com.j2kb.goal.controller;
 
 import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.dto.Member;
-import com.j2kb.goal.exception.DuplicateMemberException;
-import com.j2kb.goal.exception.NoMatchedMemberException;
 import com.j2kb.goal.service.*;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

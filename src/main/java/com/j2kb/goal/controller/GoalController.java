@@ -3,10 +3,6 @@ package com.j2kb.goal.controller;
 import com.j2kb.goal.dto.Certification;
 import com.j2kb.goal.dto.Goal;
 import com.j2kb.goal.dto.GoalState;
-import com.j2kb.goal.exception.DuplicateCertificationException;
-import com.j2kb.goal.exception.MoneyOverflowException;
-import com.j2kb.goal.exception.NoMatchedCategoryException;
-import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.service.*;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-//ToDo Goal 조회기능에는 memberEmail이 포함되면 안됨.
+
 @RestController
 @RequestMapping("/api/goals")
 public class GoalController {
