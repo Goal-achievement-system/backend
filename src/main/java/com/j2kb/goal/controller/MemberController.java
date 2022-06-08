@@ -42,16 +42,10 @@ public class MemberController {
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Member member){
-        try {
-            String token = memberService.login(member);
-            Map<String,String> result = new HashMap<>();
-            result.put("Authorization",token);
-            return ResponseEntity.ok(result);
-        }catch (IllegalStateException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
+        String token = memberService.login(member);
+        Map<String,String> result = new HashMap<>();
+        result.put("Authorization",token);
+        return ResponseEntity.ok(result);
     }
     @PostMapping("")
     public ResponseEntity<?> join(@RequestBody Member member){
@@ -70,13 +64,8 @@ public class MemberController {
     }
     @GetMapping("/myinfo/notifications")
     public ResponseEntity<?> getMyNotifications(@RequestHeader("Authorization") String token){
-        try {
-            String email = JwtBuilder.getEmailFromJwt(token);
-            return ResponseEntity.ok(notificationService.getNotificationsByEmail(email));
-        }catch (RuntimeException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        String email = JwtBuilder.getEmailFromJwt(token);
+        return ResponseEntity.ok(notificationService.getNotificationsByEmail(email));
     }
     @PutMapping("/myinfo")
     public ResponseEntity<?> updateMyInfo(@RequestBody Member member, @RequestHeader("Authorization") String token){

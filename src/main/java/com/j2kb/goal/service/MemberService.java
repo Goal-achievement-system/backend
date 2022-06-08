@@ -28,10 +28,10 @@ public class MemberService implements AbstractMemberService{
             if (memberRepository.login(member)) {
                 return JwtBuilder.build(member.getEmail());
             } else {
-                throw new IllegalStateException("login fail");
+                throw new NoMatchedMemberException(HttpStatus.UNAUTHORIZED,ErrorCode.LOGIN_FAIL,"POST /api/members/login","email or password is wrong");
             }
         }catch (DataAccessException e){
-            throw new IllegalStateException("login fail");
+            throw new NoMatchedMemberException(HttpStatus.UNAUTHORIZED,ErrorCode.LOGIN_FAIL,"POST /api/members/login","email or password is wrong");
         }
     }
 
