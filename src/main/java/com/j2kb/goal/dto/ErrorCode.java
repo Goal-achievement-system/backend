@@ -7,4 +7,5 @@ public class ErrorCode {
     public static final int CERTIFICATION_ALREADY_EXISTS = 4;
     public static final int PERMISSION_DENIED = 5;
     public static final int LACK_OF_MONEY = 6;
+    public static final int INVALID_CATEGORY = 7;
 }

@@ -41,7 +41,7 @@ public class GoalService implements AbstractGoalService{
         }
         List<String> categories = goalRepository.selectAllCategories();
         if(!categories.contains(goal.getCategory())){
-            throw new NoMatchedCategoryException(goal.getCategory()+" is not found");
+            throw new NoMatchedCategoryException(HttpStatus.NOT_FOUND, ErrorCode.INVALID_CATEGORY, "POST /api/goals", goal.getCategory()+" category is not found");
         }
         Member member = memberRepository.selectMemberByMemberEmail(goal.getMemberEmail());
         if(member.getMoney()>=goal.getMoney()){
@@ -58,7 +58,7 @@ public class GoalService implements AbstractGoalService{
         List<String> categories = goalRepository.selectAllCategories();
         categories.add("all");
         if(!categories.contains(category)){
-            throw new NoMatchedCategoryException(category + "is not exist");
+            throw new NoMatchedCategoryException(HttpStatus.NOT_FOUND, ErrorCode.INVALID_CATEGORY, "GET /api/goals/list/"+state.name()+"/"+page, category + " category is not exist");
         }
         result = goalRepository.selectGoalsByCategoryAndState(category,state,page);
         return result;

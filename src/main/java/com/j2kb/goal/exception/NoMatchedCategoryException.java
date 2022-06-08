@@ -1,12 +1,10 @@
 package com.j2kb.goal.exception;
 
-public class NoMatchedCategoryException extends RuntimeException{
-    public NoMatchedCategoryException(String msg){
-        super(msg);
-    }
+import org.springframework.http.HttpStatus;
 
-    public NoMatchedCategoryException(String msg, Throwable throwable){
-        super(msg);
-        this.initCause(throwable);
+public class NoMatchedCategoryException extends SpringHandledException{
+
+    public NoMatchedCategoryException(HttpStatus httpStatus, int errorCode, String url, String msg) {
+        super(httpStatus, errorCode, url, msg);
     }
 }

@@ -68,13 +68,8 @@ public class GoalController {
 
     @GetMapping("/{category}/list/{state}/{page:[0-9]+}")
     public ResponseEntity<List<Goal>> getGoalsByCategoryAndState(@PathVariable String category, @PathVariable GoalState state, @PathVariable int page){
-        try {
-            List<Goal> result = goalService.getGoalsByCategoryAndState(category, state, page);
-            return ResponseEntity.ok(result);
-        }catch (NoMatchedCategoryException | IllegalArgumentException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        List<Goal> result = goalService.getGoalsByCategoryAndState(category, state, page);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{category}/list/{page:[0-9]+}")
