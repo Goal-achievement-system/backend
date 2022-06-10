@@ -1,10 +1,14 @@
 package com.j2kb.goal.intercepter;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.j2kb.goal.dto.ErrorCode;
+import com.j2kb.goal.exception.SpringHandledException;
 import com.j2kb.goal.repository.MemberRepository;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -25,14 +29,20 @@ public class MemberCertInterceptor implements HandlerInterceptor {
             if (JwtBuilder.isValid(auth)) {
                 return true;
             } else {
-                response.setStatus(401);
-                response.getWriter().write("token is invalid");
+                SpringHandledException exception = new SpringHandledException(HttpStatus.UNAUTHORIZED, ErrorCode.INVALID_TOKEN,request.getMethod()+" "+request.getRequestURI(),"token is not invalid");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                ObjectMapper mapper = new ObjectMapper();
+                response.getWriter().write(mapper.writeValueAsString(exception.parseResponseEntity().getBody()));
                 return false;
             }
         }catch (NullPointerException e){
-            response.setStatus(400);
-            response.getWriter().write("token is not found");
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            SpringHandledException exception = new SpringHandledException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND,request.getMethod()+" "+request.getRequestURI(),"token is not found");
+            ObjectMapper mapper = new ObjectMapper();
+            response.getWriter().write(mapper.writeValueAsString(exception.parseResponseEntity().getBody()));
             return false;
+        }finally {
+            response.setContentType("application/json");
         }
     }
 }
