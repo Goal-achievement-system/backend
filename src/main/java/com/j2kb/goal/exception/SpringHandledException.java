@@ -1,5 +1,6 @@
 package com.j2kb.goal.exception;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -27,9 +28,10 @@ public class SpringHandledException extends RuntimeException{
         private int errorCode;
         private String errorContent;
         private String url;
-        private Timestamp timestamp;
+        @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
+        private LocalDateTime dateTime;
     }
     public final ResponseEntity<Error> parseResponseEntity(){
-        return ResponseEntity.status(httpStatus).body(new Error(errorCode,msg,url,Timestamp.valueOf(LocalDateTime.now())));
+        return ResponseEntity.status(httpStatus).body(new Error(errorCode,msg,url,LocalDateTime.now()));
     }
 }
