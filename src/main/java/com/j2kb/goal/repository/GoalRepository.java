@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface GoalRepository {
     public static final int MYINFO_GOAL_COUNT=6;
-    public static final int GOAL_COUNT=9;
+    public static final int GOAL_COUNT=6;
 
     List<String> selectAllCategories();
 
