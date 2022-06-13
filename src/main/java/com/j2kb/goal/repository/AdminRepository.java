@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface AdminRepository {
     public boolean login(Admin admin);
+    public boolean isAdmin(String email);
     public List<GoalAndCert> selectHoldGoalAndCerts(int page);
     public void updateGoalVerificationResult(Goal goal);
-    public void insertAnnouncement(Announcement announcement);
+    public long insertAnnouncement(Announcement announcement);
 }

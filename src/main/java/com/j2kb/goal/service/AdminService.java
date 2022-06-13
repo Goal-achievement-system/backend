@@ -2,12 +2,22 @@ package com.j2kb.goal.service;
 
 import com.j2kb.goal.dto.*;
 import com.j2kb.goal.exception.NoMatchedGoalException;
+import com.j2kb.goal.exception.NoMatchedMemberException;
+import com.j2kb.goal.exception.SpringHandledException;
 import com.j2kb.goal.repository.AdminRepository;
+import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 @Service
 public class AdminService implements AbstractAdminService{
@@ -22,7 +32,15 @@ public class AdminService implements AbstractAdminService{
 
     @Override
     public String login(Admin admin) {
-        return null;
+        try {
+            if (adminRepository.login(admin)) {
+                return JwtBuilder.build(admin.getEmail());
+            } else {
+                throw new NoMatchedMemberException(HttpStatus.UNAUTHORIZED,ErrorCode.LOGIN_FAIL,"POST /api/admin/login","email or password is wrong");
+            }
+        }catch (DataAccessException e){
+            throw new NoMatchedMemberException(HttpStatus.UNAUTHORIZED,ErrorCode.LOGIN_FAIL,"POST /api/admin/login","email or password is wrong");
+        }
     }
 
     @Override
@@ -52,7 +70,26 @@ public class AdminService implements AbstractAdminService{
 
     @Override
     public Announcement addAnnouncement(Announcement announcement) {
-        adminRepository.insertAnnouncement(announcement);
-        return announcement;
+        String image = announcement.getImage();
+        try {
+            byte[] imageData = java.util.Base64.getDecoder().decode(image.substring(image.indexOf(",") + 1));
+            String filenameExtension  = image.split(",")[0].split("/")[1].split(";")[0];
+            String fileName = announcement.getAnnouncementId()+"."+filenameExtension;
+            File imageFile = new File(fileName);
+            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
+            ImageIO.write(bufferedImage,filenameExtension,imageFile);
+            announcement.setImage(fileName);
+            long announcementId = adminRepository.insertAnnouncement(announcement);
+            announcement.setAnnouncementId(announcementId);
+            announcement.setDate(Timestamp.valueOf(LocalDateTime.now()));
+            fileName = announcement.getAnnouncementId()+"."+filenameExtension;
+            imageFile.renameTo(new File(fileName));
+            announcement.setImage(fileName);
+            return announcement;
+        }catch (IllegalArgumentException e){
+            throw new SpringHandledException(HttpStatus.BAD_REQUEST,ErrorCode.UNKNOWN,"POST /api/admin/announcement","DataURI 이미지가 아닙니다.");
+        } catch (IOException e) {
+            throw new SpringHandledException(HttpStatus.BAD_REQUEST,ErrorCode.UNKNOWN,"POST /api/admin/announcement","DataURI 를 파일로 바꿀 수 없습니다.");
+        }
     }
 }

@@ -4,9 +4,12 @@ import com.j2kb.goal.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -21,7 +24,40 @@ public class JdbcTemplateAdminRepository implements AdminRepository{
 
     @Override
     public boolean login(Admin admin) {
-        return false;
+        String sql = "select * from admin_list where email = ? and SHA2(concat(?,salt),256) = password";
+        String password = admin.getPassword();
+        List<Admin> results = jdbcTemplate.query(sql,(rs, rowNum) -> {
+            Admin selectedAdmin = new Admin(rs.getString("email"),"");
+            return selectedAdmin;
+        },admin.getEmail(),admin.getPassword());
+        if(results.isEmpty()){
+            return false;
+        }else{
+            Admin result = results.get(0);
+            if(result.getEmail().equals(admin.getEmail())){
+                return true;
+            }else {
+                return false;
+            }
+        }
+    }
+
+    @Override
+    public boolean isAdmin(String email) {
+        String sql = "select email from admin_list where email = ?";
+        List<String> results = jdbcTemplate.query(sql, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString(1);
+            }
+        },email);
+        if(results.isEmpty()){
+            return false;
+        }else {
+            System.out.println(email);
+            System.out.println(results.get(0));
+            return results.get(0).contentEquals(email);
+        }
     }
 
     @Override
@@ -38,9 +74,29 @@ public class JdbcTemplateAdminRepository implements AdminRepository{
     }
 
     @Override
-    public void insertAnnouncement(Announcement announcement) {
+    public long insertAnnouncement(Announcement announcement) {
         String sql = "insert into announcement(title,description,content) values(?,?,?)";
-        jdbcTemplate.update(sql,announcement.getTitle(),announcement.getDescription(),announcement.getContent());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, new String[]{"announcement_id"});
+            ps.setString(1, announcement.getTitle());
+            ps.setString(2,announcement.getDescription());
+            ps.setString(3,announcement.getImage());
+            return ps;
+        },keyHolder);
+        return keyHolder.getKey().longValue();
+    }
+
+    class AnnouncementRowMapper<T extends Announcement> implements RowMapper<T>{
+        @Override
+        public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Announcement.AnnouncementBuilder builder = Announcement.builder();
+            return (T)builder.announcementId(rs.getLong("announcement_id"))
+                    .title(rs.getString("title"))
+                    .description("description")
+                    .image("content")
+                    .date(rs.getTimestamp("date")).build();
+        }
     }
 
     class GoalAndCertRowMapper<T extends GoalAndCert> implements RowMapper<T>{

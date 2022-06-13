@@ -95,7 +95,6 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
     public boolean login(Member member) {
         String sql = "select * from member where email = ? and SHA2(concat(?,salt),256) = password";
         String password = member.getPassword();
-        System.out.println(password);
         List<Member> results =  jdbcTemplate.query(sql, (rs, rowNum) -> {
             Member.MemberBuilder builder = Member.builder()
                     .email(rs.getString("email"))

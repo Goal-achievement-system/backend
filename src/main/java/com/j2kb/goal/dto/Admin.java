@@ -6,6 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class Admin {
-    private String id;
-    private String pw;
+    private String email;
+    private String password;
 }

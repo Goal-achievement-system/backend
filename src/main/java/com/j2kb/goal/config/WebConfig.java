@@ -1,5 +1,6 @@
 package com.j2kb.goal.config;
 
+import com.j2kb.goal.intercepter.AdminCertInterceptor;
 import com.j2kb.goal.intercepter.MemberCertInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new MemberCertInterceptor())
                 .addPathPatterns("/api/**","/api/members/myinfo") // 해당 경로에 접근하기 전에 인터셉터가 가로챈다.
                 .excludePathPatterns("/api/members","/api/members/login","/api/admin","/api/statistics/total","/api/admin/**","/api/members/check/email/*");// 해당 경로는 인터셉터가 가로채지 않는다.
+        registry.addInterceptor(adminCertInterceptor())
+                .addPathPatterns("/api/admin/**")
+                .excludePathPatterns("/api/admin/login");
     }
 
     @Bean
@@ -38,5 +42,9 @@ public class WebConfig implements WebMvcConfigurer {
         DataSourceTransactionManager tm = new DataSourceTransactionManager();
         tm.setDataSource(dataSource);
         return tm;
+    }
+    @Bean
+    public AdminCertInterceptor adminCertInterceptor(){
+        return new AdminCertInterceptor();
     }
 }
