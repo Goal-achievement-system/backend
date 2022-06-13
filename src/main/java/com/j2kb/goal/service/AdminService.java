@@ -85,7 +85,7 @@ public class AdminService implements AbstractAdminService{
             fileName = "announcement"+File.separator+announcement.getAnnouncementId();
             imageFile.renameTo(new File(fileName));
             System.out.println(fileName);
-            announcement.setImage(fileName);
+            announcement.setImage("");
             return announcement;
         }catch (IllegalArgumentException e){
             throw new SpringHandledException(HttpStatus.BAD_REQUEST,ErrorCode.UNKNOWN,"POST /api/admin/announcement","DataURI 이미지가 아닙니다.");
