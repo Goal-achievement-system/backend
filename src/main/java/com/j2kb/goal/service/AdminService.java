@@ -74,7 +74,7 @@ public class AdminService implements AbstractAdminService{
         try {
             byte[] imageData = java.util.Base64.getDecoder().decode(image.substring(image.indexOf(",") + 1));
             String filenameExtension  = image.split(",")[0].split("/")[1].split(";")[0];
-            String fileName = announcement.getAnnouncementId()+"."+filenameExtension;
+            String fileName = "announcement"+File.separator+announcement.getAnnouncementId();
             File imageFile = new File(fileName);
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
             ImageIO.write(bufferedImage,filenameExtension,imageFile);
@@ -82,8 +82,9 @@ public class AdminService implements AbstractAdminService{
             long announcementId = adminRepository.insertAnnouncement(announcement);
             announcement.setAnnouncementId(announcementId);
             announcement.setDate(Timestamp.valueOf(LocalDateTime.now()));
-            fileName = announcement.getAnnouncementId()+"."+filenameExtension;
+            fileName = "announcement"+File.separator+announcement.getAnnouncementId();
             imageFile.renameTo(new File(fileName));
+            System.out.println(fileName);
             announcement.setImage(fileName);
             return announcement;
         }catch (IllegalArgumentException e){
