@@ -18,7 +18,7 @@ import java.nio.file.NoSuchFileException;
 @RestController
 @RequestMapping("/api/image")
 public class ImageController {
-    @GetMapping(value = "/goals/{goalId:[0-9]+}",produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/cert/{goalId:[0-9]+}",produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getCertImage(@PathVariable long goalId) throws IOException {
         try {
             File file = new File("cert"+ File.separator+goalId);
