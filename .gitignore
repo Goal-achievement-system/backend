@@ -40,3 +40,4 @@ out/
 *.properties
 *.p12
 announcement/
+cert/
