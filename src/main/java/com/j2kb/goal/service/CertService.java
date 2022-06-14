@@ -6,6 +6,7 @@ import com.j2kb.goal.dto.Goal;
 import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.exception.DuplicateCertificationException;
 import com.j2kb.goal.exception.NoMatchedCertificationException;
+import com.j2kb.goal.exception.NoMatchedMemberException;
 import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.repository.CertificationRepository;
 import com.j2kb.goal.repository.GoalRepository;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 @Service
@@ -47,5 +49,23 @@ public class CertService implements AbstractCertService{
         }catch (DataAccessException | NoSuchElementException e){
             throw new NoMatchedCertificationException(HttpStatus.NOT_FOUND,ErrorCode.NOT_FOUND,"GET /api/goals/cert/"+goalId,"No matched Certification");
         }
+    }
+
+    @Override
+    public List<Certification> getCertificationsByEmail(String email, GoalState goalState, int page) {
+        try {
+            return certificationRepository.selectMembersCertificationByEmail(email, goalState, page);
+        }catch (DataAccessException e){
+            throw new NoMatchedMemberException(HttpStatus.UNAUTHORIZED,ErrorCode.INVALID_TOKEN,"GET api/members/myinfo/cert/"+goalState.name()+"/"+page,"wrong email");
+        }
+    }
+
+    @Override
+    public int getCertificationsMaxPAgeByEmail(String email, GoalState goalState) {
+        int certCount = certificationRepository.selectMembersCertificationsMaxPageByEmail(email, goalState);
+        if(certCount<=6) return 1;
+        certCount = certCount / 6;
+        if(certCount%6!=0)certCount++;
+        return certCount;
     }
 }

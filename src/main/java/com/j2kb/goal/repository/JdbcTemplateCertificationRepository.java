@@ -43,11 +43,35 @@ public class JdbcTemplateCertificationRepository implements CertificationReposit
     }
 
     @Override
+    public List<Certification> selectMembersCertificationByEmail(String email, GoalState goalState, int page) {
+        int start = (page-1) * 6;
+        String sql = "select * from certification where goal_id = (select goal_id from goal where member_email = ? and verification_result = ?) limit ?,?";
+        if(goalState.equals(GoalState.all)){
+            sql = sql.replace("verification_result = ?","verification_result != ?");
+        }
+        return jdbcTemplate.query(sql,new CertificationRowMapper<>(),email,goalState.name(),start,6);
+    }
+
+    @Override
     public Optional<Certification> selectCertificationByGoalId(long goalId) {
         String sql = "select * from certification where goal_id = ?";
         Certification certification;
         certification = jdbcTemplate.queryForObject(sql, new CertificationRowMapper<Certification>(), goalId);
         return Optional.ofNullable(certification);
+    }
+
+    @Override
+    public int selectMembersCertificationsMaxPageByEmail(String email, GoalState goalState) {
+        String sql = "select count(*) from certification where goal_id = (select goal_id from goal where member_email = ? and verification_result = ?)";
+        if(goalState.equals(GoalState.all)){
+            sql = sql.replace("verification_result = ?","verification_result != ?");
+        }
+        return jdbcTemplate.query(sql, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt(1);
+            }
+        },email,goalState.name()).get(0);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.j2kb.goal.controller;
 
+import com.j2kb.goal.dto.Certification;
 import com.j2kb.goal.dto.GoalState;
 import com.j2kb.goal.dto.Member;
 import com.j2kb.goal.service.*;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,12 +21,14 @@ public class MemberController {
     private AbstractMemberService memberService;
     private AbstractNotificationService notificationService;
     private AbstractGoalService goalService;
+    private AbstractCertService certService;
 
     @Autowired
-    public MemberController(MemberService memberService, NotificationService notificationService, GoalService goalService) {
+    public MemberController(MemberService memberService, NotificationService notificationService, GoalService goalService, AbstractCertService certService) {
         this.memberService = memberService;
         this.notificationService = notificationService;
         this.goalService = goalService;
+        this.certService = certService;
     }
     @GetMapping("/check/email/{email:.+}")
     public ResponseEntity<?> canJoin(@PathVariable String email){
@@ -58,6 +62,17 @@ public class MemberController {
     public ResponseEntity<?> getMyGoals(@RequestHeader("Authorization") String token, @PathVariable GoalState state, @PathVariable int page){
         String email = JwtBuilder.getEmailFromJwt(token);
         return ResponseEntity.ok(goalService.getGoalsByEmailAndState(email, state, page));
+    }
+
+    @GetMapping("/myinfo/cert/{state}/{page:[0-9]+}")
+    public ResponseEntity<?> getMyCertifications(@RequestHeader("Authorization") String token, @PathVariable GoalState state, @PathVariable int page){
+        String email = JwtBuilder.getEmailFromJwt(token);
+        List<Certification> certifications = certService.getCertificationsByEmail(email,state,page);
+        int maxPage = certService.getCertificationsMaxPAgeByEmail(email,state);
+        Map map = new HashMap();
+        map.put("maxPage",maxPage);
+        map.put("results",certifications);
+        return ResponseEntity.ok(map);
     }
     @GetMapping("/myinfo/notifications")
     public ResponseEntity<?> getMyNotifications(@RequestHeader("Authorization") String token){
