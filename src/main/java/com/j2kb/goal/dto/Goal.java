@@ -2,6 +2,8 @@ package com.j2kb.goal.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 
@@ -16,5 +18,6 @@ public class Goal {
     private Timestamp limitDate;
     private int money;
     private String reward;
+    @Setter
     private String verificationResult;
 }

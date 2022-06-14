@@ -37,7 +37,14 @@ public class VerfiService implements AbstractVerfiService{
             }
             if(isCertificationVerificationResultEqualSuccess(certification)){
                 Member member = memberRepository.selectMemberByMemberEmail(goal.getMemberEmail());
-                memberRepository.plusMoney(member,(int)(goal.getMoney()*1.5));
+                String reward = goal.getReward();
+                int money;
+                if(reward.contentEquals("high")){
+                    money = (int)((double)(goal.getMoney())*1.5);
+                }else{
+                    money = (int)((double)(goal.getMoney())*1.1);
+                }
+                memberRepository.plusMoney(member,money);
                 String url = "GET /api/members/myinfo";
                 notificationRepository.insertNotification(makeNotification(goal.getMemberEmail(),"목표달성에 성공했습니다. 상금이 지급되었습니다.",url));
             }

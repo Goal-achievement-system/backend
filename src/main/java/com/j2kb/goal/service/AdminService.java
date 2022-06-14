@@ -4,12 +4,13 @@ import com.j2kb.goal.dto.*;
 import com.j2kb.goal.exception.NoMatchedGoalException;
 import com.j2kb.goal.exception.NoMatchedMemberException;
 import com.j2kb.goal.exception.SpringHandledException;
-import com.j2kb.goal.repository.AdminRepository;
+import com.j2kb.goal.repository.*;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -23,11 +24,16 @@ import java.util.List;
 public class AdminService implements AbstractAdminService{
 
     private AdminRepository adminRepository;
-
+    private MemberRepository memberRepository;
+    private GoalRepository goalRepository;
+    private NotificationRepository notificationRepository;
 
     @Autowired
-    public AdminService(AdminRepository adminRepository) {
+    public AdminService(AdminRepository adminRepository, MemberRepository memberRepository,GoalRepository goalRepository, NotificationRepository notificationRepository) {
         this.adminRepository = adminRepository;
+        this.memberRepository = memberRepository;
+        this.goalRepository = goalRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -48,11 +54,26 @@ public class AdminService implements AbstractAdminService{
         return adminRepository.selectHoldGoalAndCerts(page);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void successGoal(long goalId) {
         try{
-            Goal goal = Goal.builder().goalId(goalId).verificationResult("success").build();
+            Goal goal = goalRepository.selectGoalByGoalId(goalId,new GoalRowMapperIncludeEmail()).get();
+            goal.setVerificationResult("success");
             adminRepository.updateGoalVerificationResult(goal);
+            String reward = goal.getReward();
+            int money = 0;
+            if(reward.contentEquals("high")){
+                money = (int)((double)(goal.getMoney())*1.5);
+            }else {
+                money = (int)((double)(goal.getMoney())*1.1);
+            }
+            memberRepository.plusMoney(Member.builder().email(goal.getMemberEmail()).build(),money);
+            Notification.NotificationBuilder builder = Notification.builder();
+            builder.url("GET /api/members/myinfo")
+                    .content("보류된 목표의 검토결과 최종 성공처리 되었습니다.")
+                    .memberEmail(goal.getMemberEmail());
+            notificationRepository.insertNotification(builder.build());
         }catch (DataAccessException e){
             throw new NoMatchedGoalException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND,"/api/admin/goals/cert/success/"+goalId,"no matched goal with goalId = "+goalId);
         }
@@ -61,8 +82,21 @@ public class AdminService implements AbstractAdminService{
     @Override
     public void failGoal(long goalId) {
         try{
-            Goal goal = Goal.builder().goalId(goalId).verificationResult("fail").build();
+            Goal goal = goalRepository.selectGoalByGoalId(goalId,new GoalRowMapperIncludeEmail()).get();
+            goal.setVerificationResult("fail");
             adminRepository.updateGoalVerificationResult(goal);
+            String reward = goal.getReward();
+            int money = 0;
+            if(reward.contentEquals("high")){
+            }else {
+                money = (int)((double)(goal.getMoney())*0.5);
+            }
+            memberRepository.plusMoney(Member.builder().email(goal.getMemberEmail()).build(),money);
+            Notification.NotificationBuilder builder = Notification.builder();
+            builder.url("GET /api/members/myinfo")
+                    .content("보류된 목표의 검토결과 최종 실패처리 되었습니다.")
+                    .memberEmail(goal.getMemberEmail());
+            notificationRepository.insertNotification(builder.build());
         }catch (DataAccessException e){
             throw new NoMatchedGoalException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND,"/api/admin/goals/cert/fail/"+goalId,"no matched goal with goalId = "+goalId);
         }
