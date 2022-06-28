@@ -51,11 +51,7 @@ public class AdminController {
     }
     @PostMapping("/announcement")
     public ResponseEntity<?> addNewAnnouncement(@RequestBody Announcement announcement){
-        try{
-            Announcement result = adminService.addAnnouncement(announcement);
-            return ResponseEntity.ok(result);
-        }catch (Exception e){
-            return ResponseEntity.internalServerError().build();
-        }
+        Announcement result = adminService.addAnnouncement(announcement);
+        return ResponseEntity.ok(result);
     }
 }

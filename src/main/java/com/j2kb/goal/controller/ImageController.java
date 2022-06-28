@@ -41,4 +41,17 @@ public class ImageController {
             throw new SpringHandledException(HttpStatus.INTERNAL_SERVER_ERROR,ErrorCode.UNKNOWN,"GET /api/image/announcement/"+announcementId,"unknown error");
         }
     }
+
+    @GetMapping(value = "/announcement/banner/{announcementId:[0-9]+}",produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getAnnouncementBannerImage(@PathVariable long announcementId) throws IOException {
+        try {
+            File file = new File("announcement"+ File.separator+"banner"+announcementId);
+            System.out.println(file.getName());
+            return Files.readAllBytes(file.toPath());
+        }catch (NoSuchFileException e){
+            throw new SpringHandledException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND,"GET /api/image/announcement/"+announcementId,"image not found");
+        }catch (IOException e){
+            throw new SpringHandledException(HttpStatus.INTERNAL_SERVER_ERROR,ErrorCode.UNKNOWN,"GET /api/image/announcement/"+announcementId,"unknown error");
+        }
+    }
 }

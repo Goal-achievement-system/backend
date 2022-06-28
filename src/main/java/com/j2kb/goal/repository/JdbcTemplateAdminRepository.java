@@ -75,19 +75,21 @@ public class JdbcTemplateAdminRepository implements AdminRepository{
 
     @Override
     public long insertAnnouncement(Announcement announcement) {
-        String sql = "insert into announcement(title,description,content) values(?,?,?)";
+        String sql = "insert into announcement(title,description,content,banner,activation) values(?,?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"announcement_id"});
             ps.setString(1, announcement.getTitle());
             ps.setString(2,announcement.getDescription());
             ps.setString(3,announcement.getImage());
+            ps.setString(4,announcement.getBannerImage());
+            ps.setBoolean(5,announcement.isActivation());
             return ps;
         },keyHolder);
         return keyHolder.getKey().longValue();
     }
 
-    class AnnouncementRowMapper<T extends Announcement> implements RowMapper<T>{
+    static class AnnouncementRowMapper<T extends Announcement> implements RowMapper<T>{
         @Override
         public T mapRow(ResultSet rs, int rowNum) throws SQLException {
             Announcement.AnnouncementBuilder builder = Announcement.builder();
@@ -95,7 +97,9 @@ public class JdbcTemplateAdminRepository implements AdminRepository{
                     .title(rs.getString("title"))
                     .description("description")
                     .image("content")
-                    .date(rs.getTimestamp("date")).build();
+                    .date(rs.getTimestamp("date"))
+                    .bannerImage(rs.getString("banner"))
+                    .activation(rs.getBoolean("activation")).build();
         }
     }
 

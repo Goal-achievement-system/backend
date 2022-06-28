@@ -23,7 +23,7 @@ public class JdbcTemplateAnnouncementRepository implements AnnouncementRepositor
     public List<Announcement> selectAnnouncements(int page) {
         int start = (page-1)*COUNT_IN_PAGE;
         String sql = "select * from announcement limit ?,?";
-        return jdbcTemplate.query(sql,new AnnouncementRowMapper<Announcement>(),start,COUNT_IN_PAGE);
+        return jdbcTemplate.query(sql,new JdbcTemplateAdminRepository.AnnouncementRowMapper<Announcement>(),start,COUNT_IN_PAGE);
     }
 
     @Override
@@ -35,19 +35,5 @@ public class JdbcTemplateAnnouncementRepository implements AnnouncementRepositor
                 return rs.getInt(1);
             }
         }).get(0);
-    }
-
-    class AnnouncementRowMapper<T extends Announcement> implements RowMapper<T>{
-
-        @Override
-        public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Announcement.AnnouncementBuilder builder = Announcement.builder();
-            return (T)builder.announcementId(rs.getLong("announcement_id"))
-                    .title(rs.getString("title"))
-                    .description(rs.getString("description"))
-                    //.image(rs.getString("content"))
-                    .date(rs.getTimestamp("date"))
-                    .build();
-        }
     }
 }
