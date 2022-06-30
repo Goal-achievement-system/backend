@@ -118,10 +118,13 @@ public class JdbcTemplateAdminRepository implements AdminRepository{
                     .reward(rs.getString("reward"))
                     .verificationResult(rs.getString("verification_result"));
             Goal goal = goalBuilder.build();
-            Certification.builder().certId(rs.getLong("cert_id"))
+            Certification.CertificationBuilder builder = Certification.builder();
+            builder.certId(rs.getLong("cert_id"))
                     .content("cert_content")
-                    .image("image");
-            Certification certification = Certification.builder().build();
+                    .image("image")
+                    .goalId(rs.getLong("goal_id"))
+                    .verificationResult(rs.getString("verification_result"));
+            Certification certification = builder.build();
             return (T) new GoalAndCert(goal,certification);
         }
     }
