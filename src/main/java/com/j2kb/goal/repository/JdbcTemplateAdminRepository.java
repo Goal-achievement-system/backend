@@ -89,6 +89,18 @@ public class JdbcTemplateAdminRepository implements AdminRepository{
         return keyHolder.getKey().longValue();
     }
 
+    @Override
+    public int selectHoldGoalAndCertsMaxPage() {
+        String sql = "select count(*) from goal INNER JOIN certification ON goal.verification_result = 'hold' and goal.goal_id = certification.goal_id";
+        int maxPage = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt(1)).get(0);
+        if(maxPage % GOAL_COUNT!=0){
+            maxPage = maxPage / GOAL_COUNT +1;
+        }else {
+            maxPage = maxPage / GOAL_COUNT;
+        }
+        return maxPage;
+    }
+
     static class AnnouncementRowMapper<T extends Announcement> implements RowMapper<T>{
         @Override
         public T mapRow(ResultSet rs, int rowNum) throws SQLException {

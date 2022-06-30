@@ -13,4 +13,5 @@ public interface AdminRepository {
     public List<GoalAndCert> selectHoldGoalAndCerts(int page);
     public void updateGoalVerificationResult(Goal goal);
     public long insertAnnouncement(Announcement announcement);
+    public int selectHoldGoalAndCertsMaxPage();
 }

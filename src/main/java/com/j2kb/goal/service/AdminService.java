@@ -51,7 +51,10 @@ public class AdminService implements AbstractAdminService{
 
     @Override
     public List<GoalAndCert> getHoldGoalAndCerts(int page) {
-        return adminRepository.selectHoldGoalAndCerts(page);
+        List<GoalAndCert> result = adminRepository.selectHoldGoalAndCerts(page);
+        int maxPage = adminRepository.selectHoldGoalAndCertsMaxPage();
+        result.add(new GoalAndCert(null,Certification.builder().image(maxPage+"").build()));
+        return result;
     }
 
     @Transactional(rollbackFor = Exception.class)

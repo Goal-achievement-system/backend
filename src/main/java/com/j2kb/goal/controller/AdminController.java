@@ -5,6 +5,8 @@ import com.j2kb.goal.dto.Announcement;
 import com.j2kb.goal.dto.GoalAndCert;
 import com.j2kb.goal.exception.NoMatchedAdminException;
 import com.j2kb.goal.service.AbstractAdminService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -32,9 +35,17 @@ public class AdminController {
     }
     @GetMapping("/goals/hold/{page:[0-9]+}")
     public ResponseEntity<?> getHoldGoalAndCerts(@PathVariable int page){
+        @AllArgsConstructor
+        @Getter
+        class GoalAndCertsAndPAge{
+            int maxPage;
+            List<GoalAndCert> results;
+        }
         try {
             List<GoalAndCert> result = adminService.getHoldGoalAndCerts(page);
-            return ResponseEntity.ok(result);
+            int maxPage = Integer.parseInt(result.get(result.size()-1).getCertification().getImage());
+            result.remove(result.size()-1);
+            return ResponseEntity.ok(new GoalAndCertsAndPAge(maxPage,result));
         }catch (Exception e){
             return ResponseEntity.internalServerError().build();
         }
