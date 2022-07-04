@@ -79,6 +79,14 @@ public class MemberController {
         String email = JwtBuilder.getEmailFromJwt(token);
         return ResponseEntity.ok(notificationService.getNotificationsByEmail(email));
     }
+
+    @PutMapping("/myinfo/notifications/{notiId:[0-9]+}")
+    public ResponseEntity<?> getMyNotifications(@RequestHeader("Authorization") String token,@PathVariable long notiId){
+        String email = JwtBuilder.getEmailFromJwt(token);
+        notificationService.readNotification(notiId);
+        return ResponseEntity.ok();
+    }
+
     @PutMapping("/myinfo")
     public ResponseEntity<?> updateMyInfo(@RequestBody Member member, @RequestHeader("Authorization") String token){
         String email = JwtBuilder.getEmailFromJwt(token);
