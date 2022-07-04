@@ -81,10 +81,10 @@ public class MemberController {
     }
 
     @PutMapping("/myinfo/notifications/{notiId:[0-9]+}")
-    public ResponseEntity<?> getMyNotifications(@RequestHeader("Authorization") String token,@PathVariable long notiId){
+    public ResponseEntity<?> readNotification(@RequestHeader("Authorization") String token,@PathVariable long notiId){
         String email = JwtBuilder.getEmailFromJwt(token);
         notificationService.readNotification(notiId);
-        return ResponseEntity.ok();
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/myinfo")

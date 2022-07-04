@@ -3,6 +3,7 @@ package com.j2kb.goal.service;
 import com.j2kb.goal.dto.ErrorCode;
 import com.j2kb.goal.dto.Notification;
 import com.j2kb.goal.exception.NoMatchedMemberException;
+import com.j2kb.goal.exception.SpringHandledException;
 import com.j2kb.goal.repository.NotificationRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
