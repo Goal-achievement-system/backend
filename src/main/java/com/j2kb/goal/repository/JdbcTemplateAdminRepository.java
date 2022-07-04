@@ -63,7 +63,7 @@ public class JdbcTemplateAdminRepository implements AdminRepository{
     @Override
     public List<GoalAndCert> selectHoldGoalAndCerts(int page) {
         int start = (page-1) * GOAL_COUNT;
-        String sql = "select goal.*, cert_id, certification.content AS cert_content ,certification.image from goal INNER JOIN certification ON goal.verification_result = 'hold' and goal.goal_id = certification.goal_id limit ?,?";
+        String sql = "select goal.*, cert_id, certification.content AS cert_content ,certification.image,fail_count,success_count,require_success_count from goal INNER JOIN certification ON goal.verification_result = 'hold' and goal.goal_id = certification.goal_id limit ?,?";
         return jdbcTemplate.query(sql,new GoalAndCertRowMapper<GoalAndCert>(),start,GOAL_COUNT);
     }
 
@@ -135,7 +135,10 @@ public class JdbcTemplateAdminRepository implements AdminRepository{
                     .content("cert_content")
                     .image("image")
                     .goalId(rs.getLong("goal_id"))
-                    .verificationResult(rs.getString("verification_result"));
+                    .verificationResult(rs.getString("verification_result"))
+                    .successCount(rs.getByte("success_count"))
+                    .failCount(rs.getByte("fail_count"))
+                    .requireSuccessCount(rs.getByte("require_success_count"));
             Certification certification = builder.build();
             return (T) new GoalAndCert(goal,certification);
         }
