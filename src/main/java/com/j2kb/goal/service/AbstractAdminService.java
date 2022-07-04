@@ -13,4 +13,5 @@ public interface AbstractAdminService {
     void successGoal(long certId);
     void failGoal(long certId);
     Announcement addAnnouncement(Announcement announcement);
+    void updateAnnouncement(Announcement announcement);
 }

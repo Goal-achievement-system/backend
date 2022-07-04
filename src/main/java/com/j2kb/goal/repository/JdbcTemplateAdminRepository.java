@@ -90,6 +90,12 @@ public class JdbcTemplateAdminRepository implements AdminRepository{
     }
 
     @Override
+    public void updateAnnouncement(Announcement announcement) {
+        String sql = "update announcement set activation = ? where announcement_id = ?";
+        jdbcTemplate.update(sql,announcement.isActivation(),announcement.getAnnouncementId());
+    }
+
+    @Override
     public int selectHoldGoalAndCertsMaxPage() {
         String sql = "select count(*) from goal INNER JOIN certification ON goal.verification_result = 'hold' and goal.goal_id = certification.goal_id";
         int maxPage = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt(1)).get(0);

@@ -144,4 +144,12 @@ public class AdminService implements AbstractAdminService{
         BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageData));
         ImageIO.write(bufferedImage,filenameExtension,imageFile);
     }
+    @Override
+    public void updateAnnouncement(Announcement announcement) {
+        try{
+            adminRepository.updateAnnouncement(announcement);
+        }catch (DataAccessException e){
+            throw new SpringHandledException(HttpStatus.NOT_FOUND,ErrorCode.NOT_FOUND,"PUT /api/admin/announcement","해당 공지사항이 없습니다");
+        }
+    }
 }

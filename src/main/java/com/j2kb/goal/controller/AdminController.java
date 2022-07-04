@@ -65,4 +65,9 @@ public class AdminController {
         Announcement result = adminService.addAnnouncement(announcement);
         return ResponseEntity.ok(result);
     }
+    @PutMapping("/announcement")
+    public ResponseEntity<?> updateAnnouncement(@RequestBody Announcement announcement){
+        adminService.updateAnnouncement(announcement);
+        return ResponseEntity.ok().build();
+    }
 }
