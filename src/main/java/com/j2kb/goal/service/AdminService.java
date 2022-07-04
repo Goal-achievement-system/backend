@@ -74,7 +74,7 @@ public class AdminService implements AbstractAdminService{
             memberRepository.plusMoney(Member.builder().email(goal.getMemberEmail()).build(),money);
             Notification.NotificationBuilder builder = Notification.builder();
             builder.url("GET /api/members/myinfo")
-                    .content("보류된 목표의 검토결과 최종 성공처리 되었습니다.")
+                    .content("카테고리 : 목표검증;보류된 목표의 검토결과 최종 성공처리 되었습니다.")
                     .memberEmail(goal.getMemberEmail());
             notificationRepository.insertNotification(builder.build());
         }catch (DataAccessException e){
@@ -97,7 +97,7 @@ public class AdminService implements AbstractAdminService{
             memberRepository.plusMoney(Member.builder().email(goal.getMemberEmail()).build(),money);
             Notification.NotificationBuilder builder = Notification.builder();
             builder.url("GET /api/members/myinfo")
-                    .content("보류된 목표의 검토결과 최종 실패처리 되었습니다.")
+                    .content("카테고리 : 목표검증;보류된 목표의 검토결과 최종 실패처리 되었습니다.")
                     .memberEmail(goal.getMemberEmail());
             notificationRepository.insertNotification(builder.build());
         }catch (DataAccessException e){
