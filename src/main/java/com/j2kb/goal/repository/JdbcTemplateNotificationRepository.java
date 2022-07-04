@@ -47,8 +47,13 @@ public class JdbcTemplateNotificationRepository implements NotificationRepositor
 
     @Override
     public Notification updateNotification(Notification notification) {
-        //String sql = "update notification set content = ?"
-        return null;
+        String sql = "update notification set read = ? where notification_id = ? ";
+        try {
+            jdbcTemplate.update(sql, notification.isRead(), notification.getNotificationId());
+        }catch (Exception e){
+            return Notification.builder().build();
+        }
+        return notification;
     }
 
     private Notification selectNotificationById(long id){
