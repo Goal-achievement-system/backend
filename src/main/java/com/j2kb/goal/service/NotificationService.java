@@ -3,6 +3,7 @@ package com.j2kb.goal.service;
 import com.j2kb.goal.dto.ErrorCode;
 import com.j2kb.goal.dto.Notification;
 import com.j2kb.goal.exception.NoMatchedMemberException;
+import com.j2kb.goal.exception.PermissionException;
 import com.j2kb.goal.exception.SpringHandledException;
 import com.j2kb.goal.repository.NotificationRepository;
 import org.springframework.dao.DataAccessException;
@@ -33,10 +34,13 @@ public class NotificationService implements AbstractNotificationService{
     }
 
     @Override
-    public void readNotification(long id) {
-        Notification noti = Notification.builder().read(true).notificationId(id).build();
+    public void readNotification(long id,String email) {
+        List<Notification> notifications = notificationRepository.selectNotificationsByEmail(email);
+        if(!notifications.contains(Notification.builder().notificationId(id).build())){
+            throw new PermissionException(HttpStatus.FORBIDDEN,ErrorCode.PERMISSION_DENIED,"PUT /myinfo/notifications/"+id,"read other's notifiacation is impossible");
+        }
         try{
-            notificationRepository.updateNotification(noti);
+            notificationRepository.updateNotification(Notification.builder().notificationId(id).read(true).build());
         }catch (DataAccessException e){
             throw new SpringHandledException(HttpStatus.NOT_FOUND,ErrorCode.NOT_FOUND,"PUT /myinfo/notifications/"+id,"notificationis not found");
         }
