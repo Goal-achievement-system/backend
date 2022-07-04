@@ -22,7 +22,7 @@ public class JdbcTemplateAnnouncementRepository implements AnnouncementRepositor
     @Override
     public List<Announcement> selectAnnouncements(int page) {
         int start = (page-1)*COUNT_IN_PAGE;
-        String sql = "select * from announcement limit ?,?";
+        String sql = "select * from announcement where activation = true limit ?,?";
         return jdbcTemplate.query(sql,new JdbcTemplateAdminRepository.AnnouncementRowMapper<Announcement>(),start,COUNT_IN_PAGE);
     }
 
