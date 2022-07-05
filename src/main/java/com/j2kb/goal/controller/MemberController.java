@@ -103,4 +103,11 @@ public class MemberController {
         memberService.refundMoney(member);
         return ResponseEntity.ok().build();
     }
+    @DeleteMapping("/myinfo/withdrawal")
+    public ResponseEntity<?> withdrawal(@RequestHeader("Authorization") String token, @RequestHeader("password") String password){
+        String email = JwtBuilder.getEmailFromJwt(token);
+        Member member = Member.builder().email(email).password(password).build();
+        memberService.withdrawal(member);
+        return ResponseEntity.ok().build();
+    }
 }

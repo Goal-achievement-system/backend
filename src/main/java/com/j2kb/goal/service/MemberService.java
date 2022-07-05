@@ -82,7 +82,7 @@ public class MemberService implements AbstractMemberService{
         try {
             memberRepository.deleteMember(member);
         }catch (DataAccessException e){
-            throw new DuplicateMemberException(HttpStatus.CONFLICT, ErrorCode.DUPLICATED_EMAIL, "POST /api/members", "Member with email = "+member.getEmail() + "is not exist");
+            throw new PermissionException(HttpStatus.FORBIDDEN, ErrorCode.PERMISSION_DENIED, "DELETE /api/members/myinfo/withdrawal", "password fail");
         }
     }
 

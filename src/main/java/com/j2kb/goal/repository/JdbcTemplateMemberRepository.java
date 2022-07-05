@@ -87,8 +87,8 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
 
     @Override
     public void deleteMember(Member member) { // 삭제는 로그인 불가 작업
-        String sql = "update member set password = '' and salt = '' and nickname = '' and sex = '' and age = 0 and money = 0 where email = ?";
-        jdbcTemplate.update(sql,member.getEmail());
+        String sql = "update member set password = '' and salt = '' and nickname = '' and sex = '' and age = 0 where email = ? and money = 0 and SHA2(concat(?,salt),256) = password";
+        jdbcTemplate.update(sql,member.getEmail(),member.getPassword());
     }
 
     @Override
