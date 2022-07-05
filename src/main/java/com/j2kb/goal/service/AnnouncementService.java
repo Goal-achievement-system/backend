@@ -1,6 +1,7 @@
 package com.j2kb.goal.service;
 
 import com.j2kb.goal.dto.Announcement;
+import com.j2kb.goal.dto.AnnouncementsWithMaxPage;
 import com.j2kb.goal.dto.ErrorCode;
 import com.j2kb.goal.exception.SpringHandledException;
 import com.j2kb.goal.repository.AnnouncementRepository;
@@ -17,20 +18,24 @@ public class AnnouncementService implements AbstractAnnouncementService {
     private AnnouncementRepository announcementRepository;
 
     @Override
-    public List<Announcement> getAnnouncements(int page) {
+    public List<Announcement> getAnnouncements() {
         try{
-            return announcementRepository.selectAnnouncements(page);
+            return announcementRepository.selectAnnouncements();
         }catch (DataAccessException e){
-            throw new SpringHandledException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.UNKNOWN,"GET /api/announcements/list/"+page,"unknown");
+            throw new SpringHandledException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.UNKNOWN,"GET /api/announcements/list","unknown");
         }
     }
 
     @Override
-    public int getCountsOfAnnouncements() {
+    public AnnouncementsWithMaxPage getAnnouncements(int page) {
         try{
-            return announcementRepository.selectCountsOfAnnouncements();
+            List<Announcement> result = announcementRepository.selectAnnouncements(page);
+            int maxPage = announcementRepository.selectCountsOfAnnouncements();
+            maxPage = maxPage % AnnouncementRepository.COUNT_IN_PAGE == 0 ? maxPage / AnnouncementRepository.COUNT_IN_PAGE : maxPage / AnnouncementRepository.COUNT_IN_PAGE + 1;
+            return new AnnouncementsWithMaxPage(maxPage,result);
+
         }catch (DataAccessException e){
-            throw new SpringHandledException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.UNKNOWN,"","unknown");
+            throw new SpringHandledException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.UNKNOWN,"GET /api/admin/announcements/list/"+page,"unknown");
         }
     }
 }

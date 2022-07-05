@@ -20,9 +20,15 @@ public class JdbcTemplateAnnouncementRepository implements AnnouncementRepositor
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
     @Override
+    public List<Announcement> selectAnnouncements() {
+        String sql = "select * from announcement where activation = true";
+        return jdbcTemplate.query(sql,new JdbcTemplateAdminRepository.AnnouncementRowMapper<Announcement>());
+    }
+
+    @Override
     public List<Announcement> selectAnnouncements(int page) {
         int start = (page-1)*COUNT_IN_PAGE;
-        String sql = "select * from announcement where activation = true limit ?,?";
+        String sql = "select * from announcement limit ?,?";
         return jdbcTemplate.query(sql,new JdbcTemplateAdminRepository.AnnouncementRowMapper<Announcement>(),start,COUNT_IN_PAGE);
     }
 

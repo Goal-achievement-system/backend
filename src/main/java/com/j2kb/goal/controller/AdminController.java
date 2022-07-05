@@ -5,6 +5,7 @@ import com.j2kb.goal.dto.Announcement;
 import com.j2kb.goal.dto.GoalAndCert;
 import com.j2kb.goal.exception.NoMatchedAdminException;
 import com.j2kb.goal.service.AbstractAdminService;
+import com.j2kb.goal.service.AbstractAnnouncementService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ import java.util.TreeMap;
 public class AdminController {
     @Autowired
     private AbstractAdminService adminService;
+    @Autowired
+    private AbstractAnnouncementService announcementService;
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Admin admin){
         try {
@@ -69,5 +72,10 @@ public class AdminController {
     public ResponseEntity<?> updateAnnouncement(@RequestBody Announcement announcement){
         adminService.updateAnnouncement(announcement);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/announcements/list/{page:[0-9]+}")
+    public ResponseEntity<?> updateAnnouncement(@PathVariable int page){
+        return ResponseEntity.ok(announcementService.getAnnouncements(page));
     }
 }
