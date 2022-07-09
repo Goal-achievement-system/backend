@@ -93,6 +93,14 @@ public class MemberController {
         memberService.updateMember(member, email);
         return ResponseEntity.ok(memberService.getMemberByEmail(email));
     }
+
+    @PutMapping("/myinfo/password")
+    public ResponseEntity<?> updatePassword(@RequestBody Map<String,String> passwords, @RequestHeader("Authorization") String token){
+        String email = JwtBuilder.getEmailFromJwt(token);
+        memberService.updatePassword(passwords,email);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/myinfo/charge")
     public ResponseEntity<?> chargeMoney(@RequestHeader("Authorization") String token, @RequestBody Member member){
         memberService.chargeMoney(member);

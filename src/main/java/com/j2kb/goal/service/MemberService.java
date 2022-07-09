@@ -5,12 +5,15 @@ import com.j2kb.goal.dto.Member;
 import com.j2kb.goal.exception.DuplicateMemberException;
 import com.j2kb.goal.exception.NoMatchedMemberException;
 import com.j2kb.goal.exception.PermissionException;
+import com.j2kb.goal.exception.SpringHandledException;
 import com.j2kb.goal.repository.MemberRepository;
 import com.j2kb.goal.util.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class MemberService implements AbstractMemberService{
@@ -74,6 +77,21 @@ public class MemberService implements AbstractMemberService{
             }
         }else{
             throw new PermissionException(HttpStatus.UNAUTHORIZED, ErrorCode.PERMISSION_DENIED, "PUT /api/members/myinfo", "can not access other Member");
+        }
+    }
+
+    @Override
+    public void updatePassword(Map<String, String> passwords, String memberEmail) {
+        String nowPassword = passwords.get("password");
+        String nowPasswordRepeat = passwords.get("repeat");
+        if(nowPassword.contentEquals(nowPasswordRepeat)){
+            try {
+                memberRepository.updateMemberPassword(passwords, memberEmail);
+            }catch (DataAccessException e){
+                throw new SpringHandledException(HttpStatus.UNAUTHORIZED,ErrorCode.LOGIN_FAIL,"PUT /api/members/myinfo/password", "wrong password");
+            }
+        }else{
+            throw new PermissionException(HttpStatus.UNAUTHORIZED,ErrorCode.PERMISSION_DENIED,"PUT /api/members/myinfo/password", "password and repeat is not equal");
         }
     }
 

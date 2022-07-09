@@ -77,12 +77,19 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
 
     @Override
     public void updateMember(Member member) {
-        String password = member.getPassword();
-        Map<String,String> passwordAndSalt = passwordHashing(password);
-        password = passwordAndSalt.get("password");
+        String sql = "update member set nickname = ? , sex = ? , age = ? where email = ? and SHA2(concat(?,salt),256) = password";
+        jdbcTemplate.update(sql,member.getNickName(),member.getSex().name(),member.getAge(),member.getEmail(),member.getPassword());
+    }
+
+    @Override
+    public void updateMemberPassword(Map<String, String> passwords, String memberEmail) {
+        String nowPassword = passwords.get("password");
+        String newPassword = passwords.get("newPassword");
+        Map<String,String> passwordAndSalt = passwordHashing(newPassword);
         String salt = passwordAndSalt.get("salt");
-        String sql = "update member set password = ? , salt = ? , nickname = ? , sex = ? , age = ? where email = ?";
-        jdbcTemplate.update(sql,password,salt,member.getNickName(),member.getSex().name(),member.getAge(),member.getEmail());
+        newPassword = passwordAndSalt.get("password");
+        String sql = "update member set password = ?, salt = ? where email = ? and SHA2(concat(?,salt),256) = password";
+        jdbcTemplate.update(sql,newPassword,salt,memberEmail,nowPassword);
     }
 
     @Override
