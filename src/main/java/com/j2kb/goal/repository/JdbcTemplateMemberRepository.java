@@ -1,8 +1,11 @@
 package com.j2kb.goal.repository;
 
+import com.j2kb.goal.dto.ErrorCode;
 import com.j2kb.goal.dto.Member;
+import com.j2kb.goal.exception.SpringHandledException;
 import com.j2kb.goal.util.SHA256;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -94,8 +97,13 @@ public class JdbcTemplateMemberRepository implements MemberRepository{
 
     @Override
     public void deleteMember(Member member) { // 삭제는 로그인 불가 작업
-        String sql = "update member set password = '' and salt = '' and nickname = '' and sex = '' and age = 0 where email = ? and money = 0 and SHA2(concat(?,salt),256) = password";
-        jdbcTemplate.update(sql,member.getEmail(),member.getPassword());
+        String sql = "update member set password = '',salt = '', nickname = '',age = 0 where email = ? and money = 0 and SHA2(concat(?,salt),256) = password";
+        if(selectMemberByMemberEmail(member.getEmail()).getMoney()!=0){
+            throw new SpringHandledException(HttpStatus.CONFLICT, ErrorCode.LACK_OF_MONEY, "DELETE api/members/myinfo/withdrawal","can not delete member where money is not 0");
+        }
+        if(jdbcTemplate.update(sql,member.getEmail(),member.getPassword())!=1){
+            throw new SpringHandledException(HttpStatus.CONFLICT, ErrorCode.LACK_OF_MONEY, "DELETE api/members/myinfo/withdrawal","can not delete member where money is not 0");
+        }
     }
 
     @Override
